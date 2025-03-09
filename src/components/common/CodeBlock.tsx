@@ -33,7 +33,7 @@ const CodeBlock: React.FC<CodeBlockProps> = ({
           sx={{
             position: 'absolute',
             top: 8,
-            right: 8,
+            right: 0,
             zIndex: 10,
             backgroundColor: 'rgba(30, 41, 59, 0.7)',
             color: copied ? '#10B981' : '#fff',
@@ -57,6 +57,14 @@ const CodeBlock: React.FC<CodeBlockProps> = ({
           fontSize: '14px',
           backgroundColor: '#1E293B',
           margin: 0,
+          padding: '1em',
+          textAlign: 'left',
+        }}
+        codeTagProps={{
+          style: {
+            display: 'block',
+            lineHeight: '1.5',
+          }
         }}
       >
         {code}
