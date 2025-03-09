@@ -10,12 +10,10 @@ const VersionHistory: React.FC = () => {
 
   // Helper function to render change items with proper indentation
   const renderChangeItems = (changes: string[]) => {
-    let currentSection = '';
     
     return changes.map((change, index) => {
       // Check if this is a section header
       if (isSectionHeader(change)) {
-        currentSection = change;
         return (
           <Typography 
             key={index} 

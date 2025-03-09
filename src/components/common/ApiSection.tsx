@@ -1,6 +1,5 @@
 import React from 'react';
 import { Typography, Paper, Box } from '@mui/material';
-import { useLocation } from 'react-router-dom';
 import { apiData } from '../../data/apiData';
 import EndpointDetails from '../endpoints/EndpointDetails';
 
@@ -9,9 +8,7 @@ interface ApiSectionProps {
 }
 
 const ApiSection: React.FC<ApiSectionProps> = ({ sectionId }) => {
-  const location = useLocation();
   const section = apiData.find((s) => s.id === sectionId);
-
   // We're removing the scroll handling logic here since it's now handled by the ScrollToTop component
 
   if (!section) {

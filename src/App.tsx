@@ -20,7 +20,6 @@ import { apiData } from './data/apiData';
 // Define custom colors for consistent use throughout the app
 const WARM_OFFWHITE = '#faf9f5';
 const WARM_OFFWHITE_DARKER = '#f5f2e8';
-const WARM_OFFWHITE_DARKEST = '#efe9d9';
 
 const theme = createTheme({
   palette: {
