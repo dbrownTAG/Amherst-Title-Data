@@ -14,13 +14,13 @@ const ResponseCodes: React.FC = () => {
   return (
     <Box>
       <Paper elevation={0} sx={{ p: 4, borderRadius: 2 }}>
-        <Typography variant="h4" gutterBottom sx={{ fontWeight: 600, mb: 3 }}>
+        <Typography variant="h4" gutterBottom sx={{ fontWeight: 600, mb: 3, color: '#00487a' }}>
           Response Codes
         </Typography>
         
         <TableContainer sx={{ border: '1px solid #E2E8F0', borderRadius: 1 }}>
           <Table>
-            <TableHead sx={{ backgroundColor: '#F8FAFC' }}>
+            <TableHead sx={{ backgroundColor: '#f5f2e8' }}>
               <TableRow>
                 <TableCell sx={{ fontWeight: 600, width: '150px' }}>Status Code</TableCell>
                 <TableCell sx={{ fontWeight: 600 }}>Description</TableCell>

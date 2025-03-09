@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Typography, Paper, Box } from '@mui/material';
 import { useLocation } from 'react-router-dom';
 import { apiData } from '../../data/apiData';
@@ -12,25 +12,7 @@ const ApiSection: React.FC<ApiSectionProps> = ({ sectionId }) => {
   const location = useLocation();
   const section = apiData.find((s) => s.id === sectionId);
 
-  // Handle scrolling when the component mounts or sectionId changes
-  useEffect(() => {
-    if (location.hash) {
-      const id = location.hash.substring(1);
-      const element = document.getElementById(id);
-      if (element) {
-        // Add a slight delay to ensure the element is rendered
-        setTimeout(() => {
-          element.scrollIntoView({ 
-            behavior: 'smooth', 
-            block: 'start'
-          });
-        }, 100);
-      }
-    } else {
-      // Scroll to top when changing sections
-      window.scrollTo(0, 0);
-    }
-  }, [sectionId, location.hash]);
+  // We're removing the scroll handling logic here since it's now handled by the ScrollToTop component
 
   if (!section) {
     return (

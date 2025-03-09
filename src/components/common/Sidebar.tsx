@@ -64,7 +64,7 @@ const Sidebar: React.FC = () => {
       {isMobile && (
         <Box sx={{ display: 'flex', justifyContent: 'flex-end', px: 2, mb: 1 }}>
           <IconButton onClick={handleDrawerToggle}>
-            <CloseIcon />
+            <CloseIcon sx={{ color: '#00487a' }} />
           </IconButton>
         </Box>
       )}
@@ -80,7 +80,8 @@ const Sidebar: React.FC = () => {
             primary="Home" 
             primaryTypographyProps={{ 
               fontSize: '0.95rem',
-              fontWeight: location.pathname === '/' ? 600 : 400
+              fontWeight: location.pathname === '/' ? 600 : 400,
+              color: location.pathname === '/' ? '#00487a' : 'inherit'
             }} 
           />
         </ListItemButton>
@@ -95,7 +96,8 @@ const Sidebar: React.FC = () => {
             primary="Authentication" 
             primaryTypographyProps={{ 
               fontSize: '0.95rem',
-              fontWeight: location.pathname === '/authentication' ? 600 : 400
+              fontWeight: location.pathname === '/authentication' ? 600 : 400,
+              color: location.pathname === '/authentication' ? '#00487a' : 'inherit'
             }} 
           />
         </ListItemButton>
@@ -109,10 +111,14 @@ const Sidebar: React.FC = () => {
             primary="API Endpoints" 
             primaryTypographyProps={{ 
               fontSize: '0.95rem',
-              fontWeight: 600
+              fontWeight: 600,
+              color: '#00487a'
             }} 
           />
-          {endpointsOpen ? <ExpandLess /> : <ExpandMore />}
+          {endpointsOpen ? 
+            <ExpandLess sx={{ color: '#00487a' }} /> : 
+            <ExpandMore sx={{ color: '#00487a' }} />
+          }
         </ListItemButton>
         
         <Collapse in={endpointsOpen} timeout="auto" unmountOnExit>
@@ -126,9 +132,9 @@ const Sidebar: React.FC = () => {
                     sx={{ 
                       pl: 4, 
                       mb: 0.5,
-                      backgroundColor: theme.palette.grey[50],
+                      backgroundColor: '#f5f2e8',
                       '&:hover': {
-                        backgroundColor: theme.palette.grey[100],
+                        backgroundColor: '#efe9d9',
                       }
                     }}
                   >
@@ -137,10 +143,13 @@ const Sidebar: React.FC = () => {
                       primaryTypographyProps={{ 
                         fontSize: '0.9rem',
                         fontWeight: 600,
-                        color: theme.palette.primary.main
+                        color: '#00487a'
                       }} 
                     />
-                    {openSections[section.id] ? <ExpandLess fontSize="small" /> : <ExpandMore fontSize="small" />}
+                    {openSections[section.id] ? 
+                      <ExpandLess fontSize="small" sx={{ color: '#00487a' }} /> : 
+                      <ExpandMore fontSize="small" sx={{ color: '#00487a' }} />
+                    }
                   </ListItemButton>
                   
                   <Collapse in={openSections[section.id] || false} timeout="auto" unmountOnExit>
@@ -159,7 +168,8 @@ const Sidebar: React.FC = () => {
                               fontSize: '0.85rem',
                               fontWeight: (location.pathname === `/${section.id}` && 
                                 location.hash === `#${endpoint.title.toLowerCase().replace(/\s+/g, '-')}`) ? 600 : 400,
-                              color: 'text.secondary'
+                              color: (location.pathname === `/${section.id}` && 
+                                location.hash === `#${endpoint.title.toLowerCase().replace(/\s+/g, '-')}`) ? '#00487a' : 'text.secondary'
                             }} 
                           />
                         </ListItemButton>
@@ -185,7 +195,8 @@ const Sidebar: React.FC = () => {
             primary="Version History" 
             primaryTypographyProps={{ 
               fontSize: '0.95rem',
-              fontWeight: location.pathname === '/version-history' ? 600 : 400
+              fontWeight: location.pathname === '/version-history' ? 600 : 400,
+              color: location.pathname === '/version-history' ? '#00487a' : 'inherit'
             }} 
           />
         </ListItemButton>
@@ -200,7 +211,8 @@ const Sidebar: React.FC = () => {
             primary="Notes" 
             primaryTypographyProps={{ 
               fontSize: '0.95rem',
-              fontWeight: location.pathname === '/notes' ? 600 : 400
+              fontWeight: location.pathname === '/notes' ? 600 : 400,
+              color: location.pathname === '/notes' ? '#00487a' : 'inherit'
             }} 
           />
         </ListItemButton>
@@ -215,7 +227,8 @@ const Sidebar: React.FC = () => {
             primary="Response Codes" 
             primaryTypographyProps={{ 
               fontSize: '0.95rem',
-              fontWeight: location.pathname === '/response-codes' ? 600 : 400
+              fontWeight: location.pathname === '/response-codes' ? 600 : 400,
+              color: location.pathname === '/response-codes' ? '#00487a' : 'inherit'
             }} 
           />
         </ListItemButton>
@@ -231,7 +244,13 @@ const Sidebar: React.FC = () => {
           aria-label="open drawer"
           edge="start"
           onClick={handleDrawerToggle}
-          sx={{ position: 'fixed', left: 16, top: 16, zIndex: theme.zIndex.drawer + 2 }}
+          sx={{ 
+            position: 'fixed', 
+            left: 16, 
+            top: 16, 
+            zIndex: theme.zIndex.drawer + 2,
+            color: 'white'
+          }}
         >
           <MenuIcon />
         </IconButton>
@@ -251,6 +270,7 @@ const Sidebar: React.FC = () => {
             height: isMobile ? '100%' : 'calc(100% - 64px)',
             borderRight: '1px solid #e2e8f0',
             boxShadow: isMobile ? '0px 4px 20px rgba(0, 0, 0, 0.1)' : 'none',
+            backgroundColor: '#faf9f5',
           },
         }}
       >

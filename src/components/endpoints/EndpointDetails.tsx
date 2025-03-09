@@ -35,7 +35,7 @@ const EndpointDetails: React.FC<EndpointDetailsProps> = ({ endpoint }) => {
       id={endpointId}
     >
       <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
-        <Typography variant="h5" sx={{ mr: 2, fontWeight: 600 }}>
+        <Typography variant="h5" sx={{ mr: 2, fontWeight: 600, color: '#00487a' }}>
           {endpoint.title}
         </Typography>
         <Chip
@@ -50,18 +50,21 @@ const EndpointDetails: React.FC<EndpointDetailsProps> = ({ endpoint }) => {
         />
       </Box>
 
-      <Box sx={{ mb: 3, p: 2, backgroundColor: '#F8FAFC', borderRadius: 1, fontFamily: 'monospace' }}>
-        <Typography variant="body1" sx={{ fontFamily: 'monospace', fontWeight: 500 }}>
-          {endpoint.method} {endpoint.path}
-        </Typography>
-      </Box>
+      <Typography variant="body1" paragraph sx={{ color: 'text.secondary', mb: 3 }}>
+        {endpoint.description.map((paragraph, index) => <React.Fragment key={index}>{paragraph}<br /><br /></React.Fragment>)}
+      </Typography>
 
-      <Box sx={{ mb: 4 }}>
-        {endpoint.description.map((desc, index) => (
-          <Typography key={index} variant="body1" sx={{ mb: 1, color: 'text.secondary' }}>
-            {desc}
-          </Typography>
-        ))}
+      <Box sx={{ mb: 3, p: 2, backgroundColor: '#f5f2e8', borderRadius: 1, fontFamily: 'monospace' }}>
+        <Typography 
+          variant="body1" 
+          sx={{ 
+            fontFamily: 'monospace', 
+            fontWeight: 500,
+            whiteSpace: 'pre-wrap'
+          }}
+        >
+          {`${endpoint.method} ${endpoint.path}`}
+        </Typography>
       </Box>
 
       {endpoint.requestHeaders && (
@@ -80,7 +83,7 @@ const EndpointDetails: React.FC<EndpointDetailsProps> = ({ endpoint }) => {
           </Typography>
           <TableContainer sx={{ border: '1px solid #E2E8F0', borderRadius: 1 }}>
             <Table>
-              <TableHead sx={{ backgroundColor: '#F8FAFC' }}>
+              <TableHead sx={{ backgroundColor: '#f5f2e8' }}>
                 <TableRow>
                   <TableCell sx={{ fontWeight: 600 }}>Parameter</TableCell>
                   <TableCell sx={{ fontWeight: 600 }}>Type</TableCell>
@@ -121,7 +124,7 @@ const EndpointDetails: React.FC<EndpointDetailsProps> = ({ endpoint }) => {
           </Typography>
           <TableContainer sx={{ border: '1px solid #E2E8F0', borderRadius: 1 }}>
             <Table>
-              <TableHead sx={{ backgroundColor: '#F8FAFC' }}>
+              <TableHead sx={{ backgroundColor: '#f5f2e8' }}>
                 <TableRow>
                   <TableCell sx={{ fontWeight: 600 }}>Parameter</TableCell>
                   <TableCell sx={{ fontWeight: 600 }}>Type</TableCell>

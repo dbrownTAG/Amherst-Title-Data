@@ -6,7 +6,7 @@ const Notes: React.FC = () => {
   return (
     <Box>
       <Paper elevation={0} sx={{ p: 4, borderRadius: 2 }}>
-        <Typography variant="h4" gutterBottom sx={{ fontWeight: 600, mb: 3 }}>
+        <Typography variant="h4" gutterBottom sx={{ fontWeight: 600, mb: 3, color: '#00487a' }}>
           API Usage Notes
         </Typography>
         

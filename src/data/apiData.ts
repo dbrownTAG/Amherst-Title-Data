@@ -749,7 +749,7 @@ export const notes = [
 
 export const versionHistory = [
   {
-    version: 'v2.0.0',
+    version: 'v1.1.0',
     date: '2025-02-27',
     author: 'David Brown',
     changes: [

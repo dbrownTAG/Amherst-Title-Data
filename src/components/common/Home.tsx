@@ -11,20 +11,20 @@ const Home: React.FC = () => {
   return (
     <Box>
       <Paper elevation={0} sx={{ p: 4, mb: 4, borderRadius: 2 }}>
-        <Typography variant="h4" gutterBottom sx={{ fontWeight: 600, mb: 3 }}>
-          Amherst Title Data API
+        <Typography variant="h4" gutterBottom sx={{ fontWeight: 600, mb: 3, color: '#00487a' }}>
+          Title Data v1.1.0
         </Typography>
         <Typography variant="body1" paragraph sx={{ color: 'text.secondary', maxWidth: '800px', mb: 3 }}>
           Welcome to the documentation for the Amherst Title Data API. This API provides access to real estate transaction data including cash acquisitions, retail sales, and portfolio properties.
         </Typography>
         
         <Box sx={{ my: 4 }}>
-          <Typography variant="h5" gutterBottom sx={{ fontWeight: 600, mb: 3 }}>
+          <Typography variant="h5" gutterBottom sx={{ fontWeight: 600, mb: 3, color: '#00487a' }}>
             Base URLs
           </Typography>
           <Box sx={{ 
             p: 3, 
-            backgroundColor: '#F8FAFC', 
+            backgroundColor: '#f5f2e8', 
             borderRadius: 2, 
             border: '1px solid #E2E8F0',
             mb: 2
@@ -40,7 +40,7 @@ const Home: React.FC = () => {
         
         <Divider sx={{ my: 4 }} />
         
-        <Typography variant="h5" gutterBottom sx={{ fontWeight: 600, mb: 3 }}>
+        <Typography variant="h5" gutterBottom sx={{ fontWeight: 600, mb: 3, color: '#00487a' }}>
           Getting Started
         </Typography>
         <Box sx={{ mb: 4 }}>

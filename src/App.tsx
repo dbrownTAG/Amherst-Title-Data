@@ -17,6 +17,11 @@ import ScrollToTop from './components/common/ScrollToTop';
 
 import { apiData } from './data/apiData';
 
+// Define custom colors for consistent use throughout the app
+const WARM_OFFWHITE = '#faf9f5';
+const WARM_OFFWHITE_DARKER = '#f5f2e8';
+const WARM_OFFWHITE_DARKEST = '#efe9d9';
+
 const theme = createTheme({
   palette: {
     primary: {
@@ -27,8 +32,8 @@ const theme = createTheme({
       main: '#5046e5', // Purple accent like Anthropic
     },
     background: {
-      default: '#ffffff',
-      paper: '#ffffff',
+      default: WARM_OFFWHITE, // Warm off-white background
+      paper: '#ffffff', // Keep paper as pure white for contrast
     },
     text: {
       primary: '#1a202c',
@@ -45,17 +50,35 @@ const theme = createTheme({
       'Arial',
       'sans-serif',
     ].join(','),
+    h1: {
+      fontWeight: 700,
+      fontSize: '2.5rem',
+      color: '#00487a', // Specific blue color
+    },
+    h2: {
+      fontWeight: 700,
+      fontSize: '2rem',
+      color: '#00487a', // Specific blue color
+    },
+    h3: {
+      fontWeight: 600,
+      fontSize: '1.5rem',
+      color: '#00487a', // Specific blue color
+    },
     h4: {
       fontWeight: 600,
       fontSize: '1.75rem',
+      color: '#00487a', // Specific blue color
     },
     h5: {
       fontWeight: 600,
       fontSize: '1.25rem',
+      color: '#00487a', // Specific blue color
     },
     h6: {
       fontWeight: 600,
       fontSize: '1rem',
+      color: '#00487a', // Specific blue color
     },
     body1: {
       fontSize: '1rem',
@@ -74,6 +97,7 @@ const theme = createTheme({
         root: {
           boxShadow: 'none',
           border: '1px solid #e2e8f0',
+          backgroundColor: '#faf9f5', // Warm off-white background for all paper components
         },
       },
     },
@@ -84,15 +108,22 @@ const theme = createTheme({
         },
       },
     },
+    MuiTableHead: {
+      styleOverrides: {
+        root: {
+          backgroundColor: WARM_OFFWHITE_DARKER,
+        },
+      },
+    },
     MuiListItemButton: {
       styleOverrides: {
         root: {
           borderRadius: 8,
           '&.Mui-selected': {
-            backgroundColor: 'rgba(80, 70, 229, 0.08)',
-            color: '#5046e5',
+            backgroundColor: 'rgba(0, 72, 122, 0.08)',
+            color: '#00487a',
             '&:hover': {
-              backgroundColor: 'rgba(80, 70, 229, 0.12)',
+              backgroundColor: 'rgba(0, 72, 122, 0.12)',
             },
           },
         },

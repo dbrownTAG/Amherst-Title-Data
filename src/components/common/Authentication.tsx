@@ -22,7 +22,7 @@ const Authentication: React.FC = () => {
           }}>
             <LockIcon sx={{ color: 'secondary.main' }} />
           </Box>
-          <Typography variant="h4" sx={{ fontWeight: 600 }}>
+          <Typography variant="h4" sx={{ fontWeight: 600, color: '#00487a' }}>
             Authentication
           </Typography>
         </Box>
@@ -46,12 +46,12 @@ const Authentication: React.FC = () => {
         </Alert>
         
         <Box sx={{ mb: 4 }}>
-          <Typography variant="h5" gutterBottom sx={{ fontWeight: 600, mb: 2 }}>
+          <Typography variant="h5" gutterBottom sx={{ fontWeight: 600, mb: 2, color: '#00487a' }}>
             Base URLs
           </Typography>
           <Box sx={{ 
             p: 3, 
-            backgroundColor: '#F8FAFC', 
+            backgroundColor: '#f5f2e8', 
             borderRadius: 2, 
             border: '1px solid #E2E8F0'
           }}>
@@ -71,7 +71,7 @@ const Authentication: React.FC = () => {
             Obtaining an Access Token
           </Typography>
           
-          <Box sx={{ mb: 3, p: 2, backgroundColor: '#F8FAFC', borderRadius: 1, fontFamily: 'monospace' }}>
+          <Box sx={{ mb: 3, p: 2, backgroundColor: '#f5f2e8', borderRadius: 1, fontFamily: 'monospace' }}>
             <Typography variant="body1" sx={{ fontFamily: 'monospace', fontWeight: 500 }}>
               POST {authEndpoint?.path || '{amherst-api-base}/auth/token'}
             </Typography>
