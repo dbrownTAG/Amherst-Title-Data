@@ -1,6 +1,5 @@
 import React from 'react';
 import { Typography, Paper, Box, Divider, Alert } from '@mui/material';
-import LockIcon from '@mui/icons-material/Lock';
 import InfoIcon from '@mui/icons-material/Info';
 
 import { apiData, baseUrls } from '../../data/apiData';
@@ -13,19 +12,9 @@ const Authentication: React.FC = () => {
   return (
     <Box>
       <Paper elevation={0} sx={{ p: 4, mb: 4, borderRadius: 2 }}>
-        <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
-          <Box sx={{ 
-            backgroundColor: 'rgba(80, 70, 229, 0.1)', 
-            borderRadius: '8px',
-            p: 1,
-            mr: 2
-          }}>
-            <LockIcon sx={{ color: 'secondary.main' }} />
-          </Box>
-          <Typography variant="h4" sx={{ fontWeight: 600, color: '#00487a' }}>
-            Authentication
-          </Typography>
-        </Box>
+        <Typography variant="h4" sx={{ fontWeight: 600, color: '#00487a', mb: 3 }}>
+          Authentication
+        </Typography>
         
         <Typography variant="body1" paragraph sx={{ color: 'text.secondary', mb: 3 }}>
           {authSection?.description || 'The API uses OAuth 2.0 client credentials flow for authentication. You must obtain an access token before accessing any endpoints.'}
