@@ -10,7 +10,6 @@ const VersionHistory: React.FC = () => {
 
   // Helper function to render change items with proper indentation
   const renderChangeItems = (changes: string[]) => {
-    
     return changes.map((change, index) => {
       // Check if this is a section header
       if (isSectionHeader(change)) {
@@ -29,7 +28,24 @@ const VersionHistory: React.FC = () => {
           </Typography>
         );
       } 
-      // Check if this is a sub-item (starts with '- ')
+      // Check if this is a double-indented sub-item (starts with '- - ')
+      else if (change.startsWith('- - ')) {
+        return (
+          <Typography 
+            key={index} 
+            variant="body2" 
+            sx={{ 
+              mb: 1.5, 
+              color: 'text.secondary',
+              lineHeight: 1.6,
+              pl: 6 // Double indent
+            }}
+          >
+            • {change.substring(4)} {/* Remove the '- - ' prefix */}
+          </Typography>
+        );
+      }
+      // Check if this is a single-indented sub-item (starts with '- ')
       else if (change.startsWith('- ')) {
         return (
           <Typography 
@@ -39,7 +55,7 @@ const VersionHistory: React.FC = () => {
               mb: 1.5, 
               color: 'text.secondary',
               lineHeight: 1.6,
-              pl: 3 // Indent sub-items
+              pl: 3 // Single indent
             }}
           >
             • {change.substring(2)} {/* Remove the '- ' prefix */}

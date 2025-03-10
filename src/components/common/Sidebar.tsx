@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import {
   Drawer,
   List,
@@ -11,18 +11,20 @@ import {
   useMediaQuery,
   Collapse,
   IconButton,
+  Chip,
 } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import CloseIcon from '@mui/icons-material/Close';
-import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
+import ChevronRight from '@mui/icons-material/ChevronRight';
 
 import { apiData } from '../../data/apiData';
 
-const drawerWidth = 280;
+const drawerWidth = 320;
 
 const Sidebar: React.FC = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -37,11 +39,32 @@ const Sidebar: React.FC = () => {
     setEndpointsOpen(!endpointsOpen);
   };
 
-  const handleSectionToggle = (sectionId: string) => {
+  const handleSectionToggle = (section: string) => {
     setOpenSections(prev => ({
       ...prev,
-      [sectionId]: !prev[sectionId]
+      [section]: !prev[section]
     }));
+
+    // Find the section data
+    const sectionData = apiData.find(s => s.id === section);
+    if (sectionData && sectionData.endpoints.length > 0) {
+      // Get the first endpoint
+      const firstEndpoint = sectionData.endpoints[0];
+      // Navigate to the first endpoint
+      navigate(`/${section}/${firstEndpoint.title.toLowerCase().replace(/\s+/g, '-')}`);
+    }
+  };
+
+  const methodColors = {
+    GET: '#10B981',
+    POST: '#3B82F6',
+    PATCH: '#F59E0B',
+    DELETE: '#EF4444',
+    PUT: '#8B5CF6',
+  };
+
+  const getMethodColor = (method: string) => {
+    return methodColors[method as keyof typeof methodColors] || theme.palette.grey[500];
   };
 
   // Initialize section open state based on current path
@@ -116,8 +139,8 @@ const Sidebar: React.FC = () => {
             }} 
           />
           {endpointsOpen ? 
-            <ExpandLess sx={{ color: '#00487a' }} /> : 
-            <ExpandMore sx={{ color: '#00487a' }} />
+            <ExpandMore sx={{ color: '#00487a' }} /> : 
+            <ChevronRight sx={{ color: '#00487a' }} />
           }
         </ListItemButton>
         
@@ -130,11 +153,10 @@ const Sidebar: React.FC = () => {
                   <ListItemButton
                     onClick={() => handleSectionToggle(section.id)}
                     sx={{ 
-                      pl: 4, 
+                      pl: 2, 
                       mb: 0.5,
-                      backgroundColor: '#f5f2e8',
                       '&:hover': {
-                        backgroundColor: '#efe9d9',
+                        backgroundColor: 'rgba(0, 72, 122, 0.04)'
                       }
                     }}
                   >
@@ -147,8 +169,8 @@ const Sidebar: React.FC = () => {
                       }} 
                     />
                     {openSections[section.id] ? 
-                      <ExpandLess fontSize="small" sx={{ color: '#00487a' }} /> : 
-                      <ExpandMore fontSize="small" sx={{ color: '#00487a' }} />
+                      <ExpandMore fontSize="small" sx={{ color: '#00487a' }} /> : 
+                      <ChevronRight fontSize="small" sx={{ color: '#00487a' }} />
                     }
                   </ListItemButton>
                   
@@ -158,18 +180,39 @@ const Sidebar: React.FC = () => {
                         <ListItemButton
                           key={`${section.id}-${index}`}
                           component={Link}
-                          to={`/${section.id}#${endpoint.title.toLowerCase().replace(/\s+/g, '-')}`}
-                          selected={location.pathname === `/${section.id}` && location.hash === `#${endpoint.title.toLowerCase().replace(/\s+/g, '-')}`}
-                          sx={{ pl: 6, mb: 0.5, py: 0.5 }}
+                          to={`/${section.id}/${endpoint.title.toLowerCase().replace(/\s+/g, '-')}`}
+                          selected={location.pathname === `/${section.id}/${endpoint.title.toLowerCase().replace(/\s+/g, '-')}`}
+                          sx={{ 
+                            pl: 3, 
+                            pr: 2,
+                            py: 0.25,
+                            mb: 0.25,
+                            minHeight: '32px'
+                          }}
                         >
+                          <Chip
+                            label={endpoint.method}
+                            size="small"
+                            sx={{
+                              height: '20px',
+                              fontSize: '0.7rem',
+                              fontWeight: 600,
+                              mr: 1,
+                              backgroundColor: `${getMethodColor(endpoint.method)}20`,
+                              color: getMethodColor(endpoint.method),
+                              borderRadius: '4px',
+                              minWidth: '42px',
+                              '& .MuiChip-label': {
+                                px: 1
+                              }
+                            }}
+                          />
                           <ListItemText 
                             primary={endpoint.title} 
                             primaryTypographyProps={{ 
                               fontSize: '0.85rem',
-                              fontWeight: (location.pathname === `/${section.id}` && 
-                                location.hash === `#${endpoint.title.toLowerCase().replace(/\s+/g, '-')}`) ? 600 : 400,
-                              color: (location.pathname === `/${section.id}` && 
-                                location.hash === `#${endpoint.title.toLowerCase().replace(/\s+/g, '-')}`) ? '#00487a' : 'text.secondary'
+                              fontWeight: location.pathname === `/${section.id}/${endpoint.title.toLowerCase().replace(/\s+/g, '-')}` ? 600 : 400,
+                              color: location.pathname === `/${section.id}/${endpoint.title.toLowerCase().replace(/\s+/g, '-')}` ? '#00487a' : 'text.secondary'
                             }} 
                           />
                         </ListItemButton>

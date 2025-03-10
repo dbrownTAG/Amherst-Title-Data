@@ -157,11 +157,16 @@ function App() {
                 <Route path="/notes" element={<Notes />} />
                 <Route path="/response-codes" element={<ResponseCodes />} />
                 {apiData.map((section) => (
-                  <Route
-                    key={section.id}
-                    path={`/${section.id}`}
-                    element={<ApiSection sectionId={section.id} />}
-                  />
+                  <React.Fragment key={section.id}>
+                    <Route
+                      path={`/${section.id}`}
+                      element={<ApiSection sectionId={section.id} />}
+                    />
+                    <Route
+                      path={`/${section.id}/:endpointId`}
+                      element={<ApiSection sectionId={section.id} />}
+                    />
+                  </React.Fragment>
                 ))}
               </Routes>
             </Container>

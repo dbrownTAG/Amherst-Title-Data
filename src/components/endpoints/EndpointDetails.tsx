@@ -29,8 +29,7 @@ const EndpointDetails: React.FC<EndpointDetailsProps> = ({ endpoint }) => {
       sx={{ 
         p: 4, 
         mb: 4, 
-        borderRadius: 2,
-        scrollMarginTop: '100px',
+        borderRadius: 2
       }}
       id={endpointId}
     >

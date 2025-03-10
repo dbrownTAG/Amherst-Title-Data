@@ -1,5 +1,6 @@
 import React from 'react';
 import { Typography, Paper, Box } from '@mui/material';
+import { useParams } from 'react-router-dom';
 import { apiData } from '../../data/apiData';
 import EndpointDetails from '../endpoints/EndpointDetails';
 
@@ -8,8 +9,8 @@ interface ApiSectionProps {
 }
 
 const ApiSection: React.FC<ApiSectionProps> = ({ sectionId }) => {
+  const { endpointId } = useParams();
   const section = apiData.find((s) => s.id === sectionId);
-  // We're removing the scroll handling logic here since it's now handled by the ScrollToTop component
 
   if (!section) {
     return (
@@ -21,11 +22,33 @@ const ApiSection: React.FC<ApiSectionProps> = ({ sectionId }) => {
     );
   }
 
+  // If we have an endpointId, show only that endpoint
+  if (endpointId) {
+    const endpoint = section.endpoints.find(
+      e => e.title.toLowerCase().replace(/\s+/g, '-') === endpointId
+    );
+
+    if (!endpoint) {
+      return (
+        <Paper elevation={0} sx={{ p: 4, borderRadius: 2 }}>
+          <Typography variant="h5" color="error" sx={{ fontWeight: 600 }}>
+            Endpoint not found
+          </Typography>
+        </Paper>
+      );
+    }
+
+    return (
+      <Box>
+        <EndpointDetails endpoint={endpoint} />
+      </Box>
+    );
+  }
+
+  // If no endpointId is specified, show the first endpoint (List)
   return (
     <Box>
-      {section.endpoints.map((endpoint, index) => (
-        <EndpointDetails key={index} endpoint={endpoint} />
-      ))}
+      <EndpointDetails endpoint={section.endpoints[0]} />
     </Box>
   );
 };
