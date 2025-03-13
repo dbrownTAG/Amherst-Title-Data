@@ -1,9 +1,8 @@
 import React from 'react';
-import { Typography, Paper, Box, Divider } from '@mui/material';
+import { Typography, Paper, Box } from '@mui/material';
 import { useParams } from 'react-router-dom';
 import { apiData } from '../../data/apiData';
 import EndpointDetails from '../endpoints/EndpointDetails';
-import StatusMatrix from './StatusMatrix';
 
 interface ApiSectionProps {
   sectionId: string;

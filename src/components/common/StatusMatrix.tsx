@@ -1,6 +1,5 @@
 import React from 'react';
 import {
-  Paper,
   Table,
   TableBody,
   TableCell,
@@ -9,7 +8,6 @@ import {
   TableRow,
   Typography,
   Box,
-  Divider
 } from '@mui/material';
 import CheckIcon from '@mui/icons-material/Check';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
