@@ -1,8 +1,9 @@
 import React from 'react';
-import { Typography, Paper, Box } from '@mui/material';
+import { Typography, Paper, Box, Divider } from '@mui/material';
 import { useParams } from 'react-router-dom';
 import { apiData } from '../../data/apiData';
 import EndpointDetails from '../endpoints/EndpointDetails';
+import StatusMatrix from './StatusMatrix';
 
 interface ApiSectionProps {
   sectionId: string;
@@ -37,18 +38,20 @@ const ApiSection: React.FC<ApiSectionProps> = ({ sectionId }) => {
         </Paper>
       );
     }
-
+    
     return (
       <Box>
-        <EndpointDetails endpoint={endpoint} />
+        <EndpointDetails endpoint={endpoint} sectionId={sectionId} />
       </Box>
     );
   }
 
   // If no endpointId is specified, show the first endpoint (List)
+  const firstEndpoint = section.endpoints[0];
+
   return (
     <Box>
-      <EndpointDetails endpoint={section.endpoints[0]} />
+      <EndpointDetails endpoint={firstEndpoint} sectionId={sectionId} />
     </Box>
   );
 };

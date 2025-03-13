@@ -2,14 +2,17 @@ import React from 'react';
 import { Typography, Paper, Box, Chip, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, useTheme } from '@mui/material';
 import { ApiEndpoint } from '../../data/apiData';
 import CodeBlock from '../common/CodeBlock';
+import StatusMatrix from '../common/StatusMatrix';
 
 interface EndpointDetailsProps {
   endpoint: ApiEndpoint;
+  sectionId?: string;
 }
 
-const EndpointDetails: React.FC<EndpointDetailsProps> = ({ endpoint }) => {
+const EndpointDetails: React.FC<EndpointDetailsProps> = ({ endpoint, sectionId }) => {
   const theme = useTheme();
   const endpointId = endpoint.title.toLowerCase().replace(/\s+/g, '-');
+  const isListEndpoint = endpoint.title.startsWith('List');
 
   const methodColors = {
     GET: '#10B981', // green
@@ -156,6 +159,12 @@ const EndpointDetails: React.FC<EndpointDetailsProps> = ({ endpoint }) => {
           </TableContainer>
         </Box>
       )}
+      
+      {isListEndpoint && sectionId && (
+        <Box sx={{ mb: 4 }}>
+          <StatusMatrix type={sectionId as 'cash-acquisitions' | 'retail-sales' | 'bulk-portfolio'} />
+        </Box>
+      )}
 
       {endpoint.requestBody && (
         <Box sx={{ mb: 4 }}>
@@ -187,6 +196,18 @@ const EndpointDetails: React.FC<EndpointDetailsProps> = ({ endpoint }) => {
         </Typography>
         <CodeBlock code={endpoint.responseExample} language="json" showLineNumbers />
       </Box>
+
+      {endpoint.interfaceDefinition && (
+        <Box sx={{ mt: 4 }}>
+          <Typography variant="h6" gutterBottom sx={{ fontWeight: 600 }}>
+            TypeScript Interface
+          </Typography>
+          <Typography variant="body2" paragraph sx={{ color: 'text.secondary', mb: 2 }}>
+            The following TypeScript interfaces define the data structure for this endpoint:
+          </Typography>
+          <CodeBlock code={endpoint.interfaceDefinition} language="typescript" showLineNumbers />
+        </Box>
+      )}
     </Paper>
   );
 };

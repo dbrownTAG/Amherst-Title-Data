@@ -31,7 +31,7 @@ const Authentication: React.FC = () => {
             }
           }}
         >
-          Client credentials will be provided separately. Contact the API team if you need access.
+          Client credentials will be provided separately. Contact Amherst support if you need access.
         </Alert>
         
         <Box sx={{ mb: 4 }}>
