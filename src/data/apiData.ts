@@ -1074,6 +1074,10 @@ export const versionHistory = [
     version: 'v1.2.0',
     date: '2025-03-15',
     author: 'David Brown',
+    environments: {
+      qa: true,
+      prod: false
+    },
     changes: [
       'All Endpoints:',
       '- Added optional pageSize parameter to all List endpoints',
@@ -1088,6 +1092,10 @@ export const versionHistory = [
     version: 'v1.1.0',
     date: '2025-02-27',
     author: 'David Brown',
+    environments: {
+      qa: true,
+      prod: false
+    },
     changes: [
       'Added base URLs for QA and prod',
       'Cash Acquisitions:',
@@ -1115,6 +1123,10 @@ export const versionHistory = [
     version: 'v1.0.2',
     date: '2025-01-30',
     author: 'David Brown',
+    environments: {
+      qa: true,
+      prod: true
+    },
     changes: [
       'Pagination implementation'
     ]
@@ -1123,6 +1135,10 @@ export const versionHistory = [
     version: 'v1.0.1',
     date: '2025-01-29',
     author: 'David Brown',
+    environments: {
+      qa: true,
+      prod: true
+    },
     changes: [
       'Updates to List Retail Sales List Cash Acquisitions endpoint descriptions'
     ]
@@ -1131,6 +1147,10 @@ export const versionHistory = [
     version: 'v1.0.0',
     date: '2025-01-23',
     author: 'David Brown',
+    environments: {
+      qa: true,
+      prod: true
+    },
     changes: [
       'Initial spec with List Cash Acquisitions and List Retail Sales endpoints'
     ]
