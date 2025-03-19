@@ -91,19 +91,27 @@ export enum DispositionTitleDataStatus {
 const portfolioInterface = `import { Address, HOA } from './shared.interface'
 
 export interface PortfolioTitleData {
-  ActualCloseDate: string
-  AlternatePropertyId: string
-  CloseDate: string
-  HOA: HOA
   Id: string
+  AlternatePropertyId: string
+  AnticipatedCloseDate: string
+  HOA: HOA
   LastModifiedDateTime: string
   NewAssetCoName: string
-  NewFundName: string
   Property: Address
+  ReadyToClose: boolean
+  ReadyToFund: boolean
   SellerName: string
   TitleCompany: string
   TransactionName: string
-  Type: string
+  Type: PortfolioTransactionType
+}
+
+export enum PortfolioTransactionType {
+  InternalTransfer = 'Internal Transfer',
+  ManagementTransfer = 'Management Transfer',
+  ServicingRetainedSubstitution = 'Substitution - Servicing Retained',
+  ServicingRetainedBulkSale = 'Bulk Sale - Servicing Retained',
+  ServicingRetainedSecuritization = 'Securitization - Services Retained'
 }`;
 
 const sharedInterfaces = `export interface Address {
@@ -918,9 +926,8 @@ Accept: application/json`,
   "data": [
     {
       "Id": "a13VH00000HjjopYAC",
-      "ActualCloseDate": "2024-03-29",
       "AlternatePropertyId": "Amherst ID",
-      "CloseDate": "2024-03-31",
+      "AnticipatedCloseDate": "2024-03-31",
       "HOA": {
         "Contact": "John Smith", 
         "Email": "info@woodlandhillshoa.com",
@@ -932,7 +939,6 @@ Accept: application/json`,
       },
       "LastModifiedDateTime": "2024-03-15T14:30:00.000+0000",
       "NewAssetCoName": "ARMM Asset Company 3 LLC",
-      "NewFundName": "SFR Fund 2024",
       "Property": {
         "City": "Austin",
         "County": "Travis",
@@ -940,10 +946,12 @@ Accept: application/json`,
         "Street": "123 Main Street",
         "Zip": "78746"
       },
+      "ReadyToClose": false,
+      "ReadyToFund": false,
       "SellerName": "Amherst Entity, LLC",
       "TitleCompany": "First American Title",
       "TransactionName": "Portfolio Sale 2024-Q1",
-      "Type": "Bulk Sale"
+      "Type": "Bulk Sale - Servicing Retained"
     }
   ],
   "pagination": {
@@ -986,9 +994,8 @@ Accept: application/json`,
         responseExample: `{
   "data": {
     "Id": "a13VH00000HjjopYAC",
-    "ActualCloseDate": "2024-03-29",
     "AlternatePropertyId": "Amherst ID",
-    "CloseDate": "2024-03-31",
+    "AnticipatedCloseDate": "2024-03-31",
     "HOA": {
       "Contact": "John Smith", 
       "Email": "info@woodlandhillshoa.com",
@@ -1000,7 +1007,6 @@ Accept: application/json`,
     },
     "LastModifiedDateTime": "2024-03-15T14:30:00.000+0000",
     "NewAssetCoName": "ARMM Asset Company 3 LLC",
-    "NewFundName": "SFR Fund 2024",
     "Property": {
       "City": "Austin",
       "County": "Travis",
@@ -1008,10 +1014,12 @@ Accept: application/json`,
       "Street": "123 Main Street",
       "Zip": "78746"
     },
+    "ReadyToClose": false,
+    "ReadyToFund": false,
     "SellerName": "Amherst Entity, LLC",
     "TitleCompany": "First American Title",
     "TransactionName": "Portfolio Sale 2024-Q1",
-    "Type": "Bulk Sale"
+    "Type": "Bulk Sale - Servicing Retained"
   }
 }`,
         interfaceDefinition: `${portfolioInterface}\n\n// Shared interfaces\n${sharedInterfaces}`
@@ -1070,6 +1078,23 @@ export const notes = [
 ];
 
 export const versionHistory = [
+  {
+    version: 'v1.2.1',
+    date: '2025-03-20',
+    author: 'David Brown',
+    environments: {
+      qa: false,
+      prod: false
+    },
+    changes: [
+      'Bulk Portfolio:',
+      '- Renamed CloseDate to AnticipatedCloseDate',
+      '- Removed ActualCloseDate field',
+      '- Removed NewFundName field',
+      '- Added ReadyToClose and ReadyToFund boolean fields',
+      '- Updated Type field to use enumerated values',
+    ]
+  },
   {
     version: 'v1.2.0',
     date: '2025-03-15',

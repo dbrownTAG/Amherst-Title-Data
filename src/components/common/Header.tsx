@@ -83,7 +83,7 @@ const Header: React.FC = () => {
               fontWeight: 500
             }}
           >
-            v1.2.0
+            v1.2.1
           </Typography>
         </Box>
       </Toolbar>
