@@ -1083,7 +1083,7 @@ export const versionHistory = [
     date: '2025-03-20',
     author: 'David Brown',
     environments: {
-      qa: false,
+      qa: true,
       prod: false
     },
     changes: [
@@ -1101,7 +1101,7 @@ export const versionHistory = [
     author: 'David Brown',
     environments: {
       qa: true,
-      prod: false
+      prod: true
     },
     changes: [
       'All Endpoints:',
@@ -1119,7 +1119,7 @@ export const versionHistory = [
     author: 'David Brown',
     environments: {
       qa: true,
-      prod: false
+      prod: true
     },
     changes: [
       'Added base URLs for QA and prod',
