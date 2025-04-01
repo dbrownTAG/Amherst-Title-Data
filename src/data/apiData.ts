@@ -39,6 +39,7 @@ export interface AcquisitionTitleData {
   BuyerAgent: string
   BuyerName: string
   ClosingDate: string
+  ClosedAndFunded: boolean
   Id: string
   LastModifiedDateTime: string
   Property: Address
@@ -63,10 +64,10 @@ const retailSalesInterface = `import { Address, ContactName } from './shared.int
 
 export interface DispositionTitleData {
   AlternatePropertyId: string
-  BuyerAddress: Address | null
   BuyerAgent: ContactName | null
   BuyerName: ContactName | null
   ClosingDate: string
+  ClosedAndFunded: boolean
   EarnestMoney: number
   Id: string
   LastModifiedDateTime: string
@@ -155,6 +156,7 @@ export const apiData: ApiSection[] = [
   "BuyerAgent": "Main Street Renewal", // string
   "BuyerName": "ARMM Asset Company 2 LLC", // string
   "ClosingDate": "2024-12-30", // string - ISO 8601 date format
+  "ClosedAndFunded": false, // boolean
   "Id": "a13VH00000HjjopYAB",
   "LastModifiedDateTime": "2024-12-10T21:21:45.000+0000", // string - ISO 8601 datetime format
   "Property": { // Address
@@ -205,6 +207,7 @@ export interface AcquisitionTitleData {
   BuyerAgent: string
   BuyerName: string
   ClosingDate: string
+  ClosedAndFunded: boolean
   Id: string
   LastModifiedDateTime: string
   Property: Address
@@ -267,6 +270,7 @@ Accept: application/json`,
       "BuyerAgent": "Main Street Renewal",
       "BuyerName": "ARMM Asset Company 2 LLC",
       "ClosingDate": "2024-12-30",
+      "ClosedAndFunded": false,
       "LastModifiedDateTime": "2024-12-10T21:21:45.000+0000",
       "Property": {
         "City": "Austin",
@@ -358,6 +362,7 @@ Accept: application/json`,
     "BuyerAgent": "Main Street Renewal",
     "BuyerName": "ARMM Asset Company 2 LLC",
     "ClosingDate": "2024-12-30",
+    "ClosedAndFunded": false,
     "LastModifiedDateTime": "2024-12-10T21:21:45.000+0000",
     "Property": {
       "City": "Austin",
@@ -404,8 +409,8 @@ Accept: application/json`,
         method: 'PATCH',
         path: '{amherst-api-base}/v1/title-data/cash-acquisitions/:id',
         description: [
-          'Updates ready status flags for a cash acquisition transaction',
-          'At least one status flag must be included in request',
+          'Updates ClosedAndFunded status for a cash acquisition transaction',
+          'Note: ReadyToClose and ReadyToFund must be true before ClosedAndFunded can be set to true',
           'Returns updated transaction details',
           'Note: Only accepts IDs that are exactly 18 characters in length'
         ],
@@ -421,12 +426,11 @@ Accept: application/json`,
           }
         ],
         requestBody: `{
-  "ReadyToClose": true,  // Optional
-  "ReadyToFund": true    // Optional
+  "ClosedAndFunded": true
 }`,
         validationRules: [
-          'At least one of ReadyToClose or ReadyToFund must be provided',
-          'Both fields must be boolean values when provided'
+          'ClosedAndFunded must be a boolean value',
+          'ReadyToClose and ReadyToFund must be true before ClosedAndFunded can be set to true'
         ],
         responseExample: `{
   "data": {
@@ -442,6 +446,7 @@ Accept: application/json`,
     "BuyerAgent": "Main Street Renewal",
     "BuyerName": "ARMM Asset Company 2 LLC",
     "ClosingDate": "2024-12-30",
+    "ClosedAndFunded": true,
     "LastModifiedDateTime": "2024-12-10T21:21:45.000+0000",
     "Property": {
       "City": "Austin",
@@ -491,13 +496,6 @@ Accept: application/json`,
     responseObject: `{
   "Id": "a204u000003NnmcAAC", // string - 18 character ID
   "AlternatePropertyId": "p2061794", // string
-  "BuyerAddress": { // Address | null
-    "City": "Houston", // string
-    "County": "Harris", // string
-    "State": "TX", // string
-    "Street": "789 Buyer Lane", // string
-    "Zip": "77005" // string
-  },
   "BuyerAgent": { // ContactName | null
     "FirstName": "Eddie", // string
     "MiddleName": null, // string | null
@@ -509,6 +507,7 @@ Accept: application/json`,
     "LastName": "Johnson" // string
   },
   "ClosingDate": "2018-11-28", // string - ISO 8601 date format
+  "ClosedAndFunded": false, // boolean
   "EarnestMoney": 3000, // number
   "LastModifiedDateTime": "2024-12-20T21:49:00.000+0000", // string - ISO 8601 datetime format
   "Lender": "First National Bank", // string
@@ -542,10 +541,10 @@ import { Address, ContactName } from './shared.interface'
 
 export interface DispositionTitleData {
   AlternatePropertyId: string
-  BuyerAddress: Address | null
   BuyerAgent: ContactName | null
   BuyerName: ContactName | null
   ClosingDate: string
+  ClosedAndFunded: boolean
   EarnestMoney: number
   Id: string
   LastModifiedDateTime: string
@@ -599,13 +598,6 @@ Accept: application/json`,
     {
       "Id": "a204u000003NnmcAAC",
       "AlternatePropertyId": "p2061794",
-      "BuyerAddress": {
-        "City": "Houston",
-        "County": "Harris",
-        "State": "TX",
-        "Street": "789 Buyer Lane",
-        "Zip": "77005"
-      },
       "BuyerAgent": {
         "FirstName": "Eddie",
         "MiddleName": null,
@@ -617,6 +609,7 @@ Accept: application/json`,
         "LastName": "Johnson"
       },
       "ClosingDate": "2018-11-28",
+      "ClosedAndFunded": false,
       "EarnestMoney": 3000,
       "LastModifiedDateTime": "2024-12-20T21:49:00.000+0000",
       "Lender": "First National Bank",
@@ -686,13 +679,6 @@ Accept: application/json`,
   "data": {
     "Id": "a204u000003NnmcAAC",
     "AlternatePropertyId": "p2061794",
-    "BuyerAddress": {
-      "City": "Houston",
-      "County": "Harris",
-      "State": "TX",
-      "Street": "789 Buyer Lane",
-      "Zip": "77005"
-    },
     "BuyerAgent": {
       "FirstName": "Eddie",
       "MiddleName": null,
@@ -704,6 +690,7 @@ Accept: application/json`,
       "LastName": "Johnson"
     },
     "ClosingDate": "2018-11-28",
+    "ClosedAndFunded": false,
     "EarnestMoney": 3000,
     "LastModifiedDateTime": "2024-12-20T21:49:00.000+0000",
     "Lender": "First National Bank",
@@ -738,8 +725,8 @@ Accept: application/json`,
         method: 'PATCH',
         path: '{amherst-api-base}/v1/title-data/retail-sales/:id',
         description: [
-          'Updates ready status flags for a retail sale transaction',
-          'At least one status flag must be included in request',
+          'Updates ClosedAndFunded status for a retail sale transaction',
+          'Note: ReadyToClose and ReadyToFund must be true before ClosedAndFunded can be set to true',
           'Returns updated transaction details',
           'Note: Only accepts IDs that are exactly 18 characters in length'
         ],
@@ -755,24 +742,16 @@ Accept: application/json`,
           }
         ],
         requestBody: `{
-  "ReadyToClose": true,  // Optional
-  "ReadyToFund": true    // Optional
+  "ClosedAndFunded": true
 }`,
         validationRules: [
-          'At least one of ReadyToClose or ReadyToFund must be provided',
-          'Both fields must be boolean values when provided'
+          'ClosedAndFunded must be a boolean value',
+          'ReadyToClose and ReadyToFund must be true before ClosedAndFunded can be set to true'
         ],
         responseExample: `{
   "data": {
     "Id": "a204u000003NnmcAAC",
     "AlternatePropertyId": "p2061794",
-    "BuyerAddress": {
-      "City": "Houston",
-      "County": "Harris",
-      "State": "TX",
-      "Street": "789 Buyer Lane",
-      "Zip": "77005"
-    },
     "BuyerAgent": {
       "FirstName": "Eddie",
       "MiddleName": null,
@@ -784,6 +763,7 @@ Accept: application/json`,
       "LastName": "Johnson"
     },
     "ClosingDate": "2018-11-28",
+    "ClosedAndFunded": true,
     "EarnestMoney": 3000,
     "LastModifiedDateTime": "2024-12-20T21:49:00.000+0000",
     "Lender": "First National Bank",
@@ -1074,10 +1054,29 @@ export const notes = [
   'Results are paginated with 100 items per page by default',
   'Use the pagination links provided in the response to navigate through the results',
   'All GET by ID endpoints only accept IDs that are exactly 18 characters in length',
-  'Your access token determines which data you can access - you will only see data for entities you are authorized to view'
+  'Your access token determines which data you can access - you will only see data for entities you are authorized to view',
+  'The ClosedAndFunded field can only be set to true if ReadyToClose and ReadyToFund are already true'
 ];
 
 export const versionHistory = [
+  {
+    version: 'v1.3.0',
+    date: '2025-04-15',
+    author: 'David Brown',
+    environments: {
+      qa: true,
+      prod: false
+    },
+    changes: [
+      'Cash Acquisitions and Retail Sales:',
+      '- ReadyToClose and ReadyToFund are now read-only fields',
+      '- Added ClosedAndFunded boolean field to all responses',
+      '- Update endpoints now only accept ClosedAndFunded field',
+      '- ReadyToClose and ReadyToFund must be true before ClosedAndFunded can be set to true',
+      'Retail Sales:',
+      '- Removed BuyerAddress from all responses'
+    ]
+  },
   {
     version: 'v1.2.1',
     date: '2025-03-20',
