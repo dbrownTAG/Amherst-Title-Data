@@ -1065,7 +1065,7 @@ export const versionHistory = [
     author: 'David Brown',
     environments: {
       qa: true,
-      prod: false
+      prod: true
     },
     changes: [
       'Cash Acquisitions and Retail Sales:',
@@ -1083,7 +1083,7 @@ export const versionHistory = [
     author: 'David Brown',
     environments: {
       qa: true,
-      prod: false
+      prod: true
     },
     changes: [
       'Bulk Portfolio:',
