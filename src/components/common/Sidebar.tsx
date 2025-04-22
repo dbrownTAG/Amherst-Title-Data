@@ -19,6 +19,7 @@ import ExpandMore from '@mui/icons-material/ExpandMore';
 import ChevronRight from '@mui/icons-material/ChevronRight';
 
 import { apiData } from '../../data/apiData';
+import styles from './MethodLabel.module.css';
 
 const drawerWidth = 320;
 
@@ -176,47 +177,118 @@ const Sidebar: React.FC = () => {
                   
                   <Collapse in={openSections[section.id] || false} timeout="auto" unmountOnExit>
                     <List component="div" disablePadding>
-                      {section.endpoints.map((endpoint, index) => (
-                        <ListItemButton
-                          key={`${section.id}-${index}`}
-                          component={Link}
-                          to={`/${section.id}/${endpoint.title.toLowerCase().replace(/\s+/g, '-')}`}
-                          selected={location.pathname === `/${section.id}/${endpoint.title.toLowerCase().replace(/\s+/g, '-')}`}
-                          sx={{ 
-                            pl: 3, 
-                            pr: 2,
-                            py: 0.25,
-                            mb: 0.25,
-                            minHeight: '32px'
-                          }}
-                        >
-                          <Chip
-                            label={endpoint.method}
-                            size="small"
-                            sx={{
-                              height: '20px',
-                              fontSize: '0.7rem',
-                              fontWeight: 600,
-                              mr: 1,
-                              backgroundColor: `${getMethodColor(endpoint.method)}20`,
-                              color: getMethodColor(endpoint.method),
-                              borderRadius: '4px',
-                              minWidth: '42px',
-                              '& .MuiChip-label': {
-                                px: 1
-                              }
+                      {section.endpoints.map((endpoint, index) => {
+                        // Check if this is a parent endpoint with nested endpoints
+                        const hasNestedEndpoints = endpoint.endpoints && endpoint.endpoints.length > 0;
+                        const isDocumentSection = endpoint.title === 'Documents' && hasNestedEndpoints;
+                        
+                        // For document sections, we'll render a group header and then all child endpoints
+                        if (isDocumentSection) {
+                          return (
+                            <React.Fragment key={`${section.id}-${index}`}>
+                              {/* Document Section Header */}
+                              <ListItemButton
+                                sx={{ 
+                                  pl: 3, 
+                                  pr: 2,
+                                  py: 0.5,
+                                  mb: 0.25,
+                                  bgcolor: 'rgba(0, 72, 122, 0.04)'
+                                }}
+                              >
+                                <ListItemText 
+                                  primary="Documents" 
+                                  primaryTypographyProps={{ 
+                                    fontSize: '0.85rem',
+                                    fontWeight: 600,
+                                    color: '#00487a'
+                                  }} 
+                                />
+                              </ListItemButton>
+                              
+                              {/* Document Child Endpoints */}
+                              {endpoint.endpoints?.map((childEndpoint, childIndex) => (
+                                <ListItemButton
+                                  key={`${section.id}-${index}-${childIndex}`}
+                                  component={Link}
+                                  to={`/${section.id}/${childEndpoint.title.toLowerCase().replace(/\s+/g, '-')}`}
+                                  selected={location.pathname === `/${section.id}/${childEndpoint.title.toLowerCase().replace(/\s+/g, '-')}`}
+                                  sx={{ 
+                                    pl: 2.5,
+                                    pr: 2,
+                                    py: 0.25,
+                                    mb: 0.25,
+                                    minHeight: '32px'
+                                  }}
+                                >
+                                  <Chip
+                                    label={childEndpoint.method}
+                                    size="small"
+                                    className={`${styles.methodLabel} ${styles[childEndpoint.method.toLowerCase()]}`}
+                                    sx={{
+                                      height: '20px',
+                                      fontSize: '0.7rem',
+                                      fontWeight: 600,
+                                      borderRadius: '4px',
+                                      '& .MuiChip-label': {
+                                        px: 1
+                                      }
+                                    }}
+                                  />
+                                  <ListItemText 
+                                    primary={childEndpoint.title} 
+                                    primaryTypographyProps={{ 
+                                      fontSize: '0.85rem',
+                                      fontWeight: location.pathname === `/${section.id}/${childEndpoint.title.toLowerCase().replace(/\s+/g, '-')}` ? 600 : 400,
+                                      color: location.pathname === `/${section.id}/${childEndpoint.title.toLowerCase().replace(/\s+/g, '-')}` ? '#00487a' : 'text.secondary'
+                                    }} 
+                                  />
+                                </ListItemButton>
+                              ))}
+                            </React.Fragment>
+                          );
+                        }
+                        
+                        // Regular endpoint without nesting
+                        return (
+                          <ListItemButton
+                            key={`${section.id}-${index}`}
+                            component={Link}
+                            to={`/${section.id}/${endpoint.title.toLowerCase().replace(/\s+/g, '-')}`}
+                            selected={location.pathname === `/${section.id}/${endpoint.title.toLowerCase().replace(/\s+/g, '-')}`}
+                            sx={{ 
+                              pl: 2,
+                              pr: 2,
+                              py: 0.25,
+                              mb: 0.25,
+                              minHeight: '32px'
                             }}
-                          />
-                          <ListItemText 
-                            primary={endpoint.title} 
-                            primaryTypographyProps={{ 
-                              fontSize: '0.85rem',
-                              fontWeight: location.pathname === `/${section.id}/${endpoint.title.toLowerCase().replace(/\s+/g, '-')}` ? 600 : 400,
-                              color: location.pathname === `/${section.id}/${endpoint.title.toLowerCase().replace(/\s+/g, '-')}` ? '#00487a' : 'text.secondary'
-                            }} 
-                          />
-                        </ListItemButton>
-                      ))}
+                          >
+                            <Chip
+                              label={endpoint.method}
+                              size="small"
+                              className={`${styles.methodLabel} ${styles[endpoint.method.toLowerCase()]}`}
+                              sx={{
+                                height: '20px',
+                                fontSize: '0.7rem',
+                                fontWeight: 600,
+                                borderRadius: '4px',
+                                '& .MuiChip-label': {
+                                  px: 1
+                                }
+                              }}
+                            />
+                            <ListItemText 
+                              primary={endpoint.title} 
+                              primaryTypographyProps={{ 
+                                fontSize: '0.85rem',
+                                fontWeight: location.pathname === `/${section.id}/${endpoint.title.toLowerCase().replace(/\s+/g, '-')}` ? 600 : 400,
+                                color: location.pathname === `/${section.id}/${endpoint.title.toLowerCase().replace(/\s+/g, '-')}` ? '#00487a' : 'text.secondary'
+                              }} 
+                            />
+                          </ListItemButton>
+                        );
+                      })}
                     </List>
                   </Collapse>
                 </React.Fragment>

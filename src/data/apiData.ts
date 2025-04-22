@@ -20,6 +20,7 @@ export interface ApiEndpoint {
   validationRules?: string[];
   responseExample: string;
   interfaceDefinition?: string;
+  endpoints?: ApiEndpoint[];
 }
 
 export interface ApiSection {
@@ -137,6 +138,46 @@ export interface HOA {
   Name: string
   PhoneNumber: string
   Website: string
+}`;
+
+// Document interfaces
+const documentInterfaces = `export interface Document {
+  Id: string
+  DocumentId: string
+  DocType: DocumentType
+  OrderedDate: string | null
+  UploadedDate: string | null
+  Status: string | null
+}
+
+export enum DocumentType {
+  AFFIDAVIT = 'Affidavit',
+  ASSIGNMENT_OF_LEASE = 'Assignment_Of_Lease',
+  BUYER_CLOSING_DOCS = 'Buyer_Closing_Docs',
+  CCR = 'CCR',
+  CLOSING_DISCLOSURE = 'Closing_Disclosure',
+  DEED = 'Deed',
+  ESCROW_AGREEMENT = 'Escrow_Agreement',
+  EXECUTED_DEED = 'Executed_Deed',
+  FINAL_CONTRACT_AND_AMENDMENTS = 'Final_Contract_And_Amendments',
+  FINAL_HUD = 'Final_HUD',
+  FIRPTA = 'FIRPTA',
+  HOA_CERTIFICATE = 'HOA_Certificate',
+  LEASE = 'Lease',
+  LEASEBACK = 'Leaseback',
+  MLC = 'MLC',
+  MORTGAGE = 'Mortgage',
+  NO_HOA_CONFIRMATION = 'No_HOA_Confirmation',
+  NON_FOREIGN_CERT = 'Non_Foreign_Cert',
+  PLAT_MAP = 'Plat_Map',
+  RECORDED_DEED = 'Recorded_Deed',
+  SCHEDULE_B = 'Schedule_B',
+  SETTLEMENT_STATEMENT = 'Settlement_Statement',
+  SURVEY = 'Survey',
+  TAX_CERTIFICATE = 'Tax_Certificate',
+  TITLE_COMMITMENT = 'Title_Commitment',
+  TITLE_POLICY = 'Title_Policy',
+  UNEXECUTED_DEED = 'Unexecuted_Deed'
 }`;
 
 export const apiData: ApiSection[] = [
@@ -349,58 +390,56 @@ Accept: application/json`,
           }
         ],
         responseExample: `{
-  "data": {
-    "Id": "a13VH00000HjjopYAB",
-    "AlternatePropertyId": "10003399",
-    "BuyerAddress": {
-      "City": "Austin",
-      "County": "Travis",
-      "State": "TX",
-      "Street": "456 Corporate Ave",
-      "Zip": "78701"
-    },
-    "BuyerAgent": "Main Street Renewal",
-    "BuyerName": "ARMM Asset Company 2 LLC",
-    "ClosingDate": "2024-12-30",
-    "ClosedAndFunded": false,
-    "LastModifiedDateTime": "2024-12-10T21:21:45.000+0000",
-    "Property": {
-      "City": "Austin",
-      "County": "Travis",
-      "State": "TX",
-      "Street": "123 Main Street",
-      "Zip": "78746"
-    },
-    "ReadyToClose": false,  
-    "ReadyToFund": false,    
-    "SalesPrice": 179900,
-    "SellerAddress": {
-      "City": "Austin",
-      "County": "Travis",
-      "State": "TX",
-      "Street": "789 Seller Blvd",
-      "Zip": "78704"
-    },
-    "SellerAgent": {
-      "FirstName": "Jane",
+  "Id": "a13VH00000HjjopYAB",
+  "AlternatePropertyId": "10003399",
+  "BuyerAddress": {
+    "City": "Austin",
+    "County": "Travis",
+    "State": "TX",
+    "Street": "456 Corporate Ave",
+    "Zip": "78701"
+  },
+  "BuyerAgent": "Main Street Renewal",
+  "BuyerName": "ARMM Asset Company 2 LLC",
+  "ClosingDate": "2024-12-30",
+  "ClosedAndFunded": false,
+  "LastModifiedDateTime": "2024-12-10T21:21:45.000+0000",
+  "Property": {
+    "City": "Austin",
+    "County": "Travis",
+    "State": "TX",
+    "Street": "123 Main Street",
+    "Zip": "78746"
+  },
+  "ReadyToClose": false,  
+  "ReadyToFund": false,    
+  "SalesPrice": 179900,
+  "SellerAddress": {
+    "City": "Austin",
+    "County": "Travis",
+    "State": "TX",
+    "Street": "789 Seller Blvd",
+    "Zip": "78704"
+  },
+  "SellerAgent": {
+    "FirstName": "Jane",
+    "MiddleName": null,
+    "LastName": "Doe"
+  },
+  "SellerNames": [
+    {
+      "FirstName": "John",
       "MiddleName": null,
-      "LastName": "Doe"
+      "LastName": "Smith"
     },
-    "SellerNames": [
-      {
-        "FirstName": "John",
-        "MiddleName": null,
-        "LastName": "Smith"
-      },
-      {
-        "FirstName": "Mary",
-        "MiddleName": "Ann",
-        "LastName": "Smith"
-      }
-    ],
-    "Status": "Open",
-    "TentativeDate": "2024-12-30"
-  }
+    {
+      "FirstName": "Mary",
+      "MiddleName": "Ann",
+      "LastName": "Smith"
+    }
+  ],
+  "Status": "Open",
+  "TentativeDate": "2024-12-30"
 }`,
         interfaceDefinition: `${cashAcquisitionsInterface}\n\n// Shared interfaces\n${sharedInterfaces}`
       },
@@ -433,58 +472,56 @@ Accept: application/json`,
           'ReadyToClose and ReadyToFund must be true before ClosedAndFunded can be set to true'
         ],
         responseExample: `{
-  "data": {
-    "Id": "a13VH00000HjjopYAB",
-    "AlternatePropertyId": "10003399",
-    "BuyerAddress": {
-      "City": "Austin",
-      "County": "Travis",
-      "State": "TX",
-      "Street": "456 Corporate Ave",
-      "Zip": "78701"
-    },
-    "BuyerAgent": "Main Street Renewal",
-    "BuyerName": "ARMM Asset Company 2 LLC",
-    "ClosingDate": "2024-12-30",
-    "ClosedAndFunded": true,
-    "LastModifiedDateTime": "2024-12-10T21:21:45.000+0000",
-    "Property": {
-      "City": "Austin",
-      "County": "Travis",
-      "State": "TX",
-      "Street": "123 Main Street",
-      "Zip": "78746"
-    },
-    "ReadyToClose": true,  
-    "ReadyToFund": true,    
-    "SalesPrice": 179900,
-    "SellerAddress": {
-      "City": "Austin",
-      "County": "Travis",
-      "State": "TX",
-      "Street": "789 Seller Blvd",
-      "Zip": "78704"
-    },
-    "SellerAgent": {
-      "FirstName": "Jane",
+  "Id": "a13VH00000HjjopYAB",
+  "AlternatePropertyId": "10003399",
+  "BuyerAddress": {
+    "City": "Austin",
+    "County": "Travis",
+    "State": "TX",
+    "Street": "456 Corporate Ave",
+    "Zip": "78701"
+  },
+  "BuyerAgent": "Main Street Renewal",
+  "BuyerName": "ARMM Asset Company 2 LLC",
+  "ClosingDate": "2024-12-30",
+  "ClosedAndFunded": true,
+  "LastModifiedDateTime": "2024-12-10T21:21:45.000+0000",
+  "Property": {
+    "City": "Austin",
+    "County": "Travis",
+    "State": "TX",
+    "Street": "123 Main Street",
+    "Zip": "78746"
+  },
+  "ReadyToClose": false,  
+  "ReadyToFund": false,    
+  "SalesPrice": 179900,
+  "SellerAddress": {
+    "City": "Austin",
+    "County": "Travis",
+    "State": "TX",
+    "Street": "789 Seller Blvd",
+    "Zip": "78704"
+  },
+  "SellerAgent": {
+    "FirstName": "Jane",
+    "MiddleName": null,
+    "LastName": "Doe"
+  },
+  "SellerNames": [
+    {
+      "FirstName": "John",
       "MiddleName": null,
-      "LastName": "Doe"
+      "LastName": "Smith"
     },
-    "SellerNames": [
-      {
-        "FirstName": "John",
-        "MiddleName": null,
-        "LastName": "Smith"
-      },
-      {
-        "FirstName": "Mary",
-        "MiddleName": "Ann",
-        "LastName": "Smith"
-      }
-    ],
-    "Status": "Open",
-    "TentativeDate": "2024-12-30"
-  }
+    {
+      "FirstName": "Mary",
+      "MiddleName": "Ann",
+      "LastName": "Smith"
+    }
+  ],
+  "Status": "Open",
+  "TentativeDate": "2024-12-30"
 }`,
         interfaceDefinition: `${cashAcquisitionsInterface}\n\n// Shared interfaces\n${sharedInterfaces}`
       }
@@ -676,47 +713,45 @@ Accept: application/json`,
           }
         ],
         responseExample: `{
-  "data": {
-    "Id": "a204u000003NnmcAAC",
-    "AlternatePropertyId": "p2061794",
-    "BuyerAgent": {
-      "FirstName": "Eddie",
-      "MiddleName": null,
-      "LastName": "Tomlinson"
-    },
-    "BuyerName": {
-      "FirstName": "Sarah",
-      "MiddleName": "Jane",
-      "LastName": "Johnson"
-    },
-    "ClosingDate": "2018-11-28",
-    "ClosedAndFunded": false,
-    "EarnestMoney": 3000,
-    "LastModifiedDateTime": "2024-12-20T21:49:00.000+0000",
-    "Lender": "First National Bank",
-    "LoanAmount": 240000,
-    "Property": {
-      "City": "Houston",
-      "County": "Harris",
-      "State": "TX",
-      "Street": "456 Oak Avenue",
-      "Zip": "77002"
-    },
-    "ReadyToClose": false,  
-    "ReadyToFund": false,    
-    "SalesPrice": 300000,
-    "SellerAddress": {
-      "City": "Austin",
-      "County": "Travis",
-      "State": "TX",
-      "Street": "101 Corporate Drive",
-      "Zip": "78701"
-    },
-    "SellerAgent": "Hunter Fendley (TX)",
-    "SellerName": "Mesa Verde Assets, LLC",
-    "Status": "Open",
-    "TentativeDate": ""
-  }
+  "Id": "a204u000003NnmcAAC",
+  "AlternatePropertyId": "p2061794",
+  "BuyerAgent": {
+    "FirstName": "Eddie",
+    "MiddleName": null,
+    "LastName": "Tomlinson"
+  },
+  "BuyerName": {
+    "FirstName": "Sarah",
+    "MiddleName": "Jane",
+    "LastName": "Johnson"
+  },
+  "ClosingDate": "2018-11-28",
+  "ClosedAndFunded": false,
+  "EarnestMoney": 3000,
+  "LastModifiedDateTime": "2024-12-20T21:49:00.000+0000",
+  "Lender": "First National Bank",
+  "LoanAmount": 240000,
+  "Property": {
+    "City": "Houston",
+    "County": "Harris",
+    "State": "TX",
+    "Street": "456 Oak Avenue",
+    "Zip": "77002"
+  },
+  "ReadyToClose": false,  
+  "ReadyToFund": false,    
+  "SalesPrice": 300000,
+  "SellerAddress": {
+    "City": "Austin",
+    "County": "Travis",
+    "State": "TX",
+    "Street": "101 Corporate Drive",
+    "Zip": "78701"
+  },
+  "SellerAgent": "Hunter Fendley (TX)",
+  "SellerName": "Mesa Verde Assets, LLC",
+  "Status": "Open",
+  "TentativeDate": ""
 }`,
         interfaceDefinition: `${retailSalesInterface}\n\n// Shared interfaces\n${sharedInterfaces}`
       },
@@ -749,49 +784,344 @@ Accept: application/json`,
           'ReadyToClose and ReadyToFund must be true before ClosedAndFunded can be set to true'
         ],
         responseExample: `{
-  "data": {
-    "Id": "a204u000003NnmcAAC",
-    "AlternatePropertyId": "p2061794",
-    "BuyerAgent": {
-      "FirstName": "Eddie",
-      "MiddleName": null,
-      "LastName": "Tomlinson"
-    },
-    "BuyerName": {
-      "FirstName": "Sarah",
-      "MiddleName": "Jane",
-      "LastName": "Johnson"
-    },
-    "ClosingDate": "2018-11-28",
-    "ClosedAndFunded": true,
-    "EarnestMoney": 3000,
-    "LastModifiedDateTime": "2024-12-20T21:49:00.000+0000",
-    "Lender": "First National Bank",
-    "LoanAmount": 240000,
-    "Property": {
-      "City": "Houston",
-      "County": "Harris",
-      "State": "TX",
-      "Street": "456 Oak Avenue",
-      "Zip": "77002"
-    },
-    "ReadyToClose": true,  
-    "ReadyToFund": true,    
-    "SalesPrice": 300000,
-    "SellerAddress": {
-      "City": "Austin",
-      "County": "Travis",
-      "State": "TX",
-      "Street": "101 Corporate Drive",
-      "Zip": "78701"
-    },
-    "SellerAgent": "Hunter Fendley (TX)",
-    "SellerName": "Mesa Verde Assets, LLC",
-    "Status": "Open",
-    "TentativeDate": ""
-  }
+  "Id": "a204u000003NnmcAAC",
+  "AlternatePropertyId": "p2061794",
+  "BuyerAgent": {
+    "FirstName": "Eddie",
+    "MiddleName": null,
+    "LastName": "Tomlinson"
+  },
+  "BuyerName": {
+    "FirstName": "Sarah",
+    "MiddleName": "Jane",
+    "LastName": "Johnson"
+  },
+  "ClosingDate": "2018-11-28",
+  "ClosedAndFunded": true,
+  "EarnestMoney": 3000,
+  "LastModifiedDateTime": "2024-12-20T21:49:00.000+0000",
+  "Lender": "First National Bank",
+  "LoanAmount": 240000,
+  "Property": {
+    "City": "Houston",
+    "County": "Harris",
+    "State": "TX",
+    "Street": "456 Oak Avenue",
+    "Zip": "77002"
+  },
+  "ReadyToClose": true,  
+  "ReadyToFund": true,    
+  "SalesPrice": 300000,
+  "SellerAddress": {
+    "City": "Austin",
+    "County": "Travis",
+    "State": "TX",
+    "Street": "101 Corporate Drive",
+    "Zip": "78701"
+  },
+  "SellerAgent": "Hunter Fendley (TX)",
+  "SellerName": "Mesa Verde Assets, LLC",
+  "Status": "Open",
+  "TentativeDate": ""
 }`,
         interfaceDefinition: `${retailSalesInterface}\n\n// Shared interfaces\n${sharedInterfaces}`
+      }
+    ]
+  },
+  {
+    id: 'document-management',
+    title: 'Document Management',
+    description: 'The following endpoints allow for document management associated with both cash acquisition and retail sale transactions. Document operations are restricted to title companies specified in the allowedCompanies list in the token metadata.',
+    endpoints: [
+      {
+        title: 'Create Document',
+        method: 'POST',
+        path: '{amherst-api-base}/v1/title-data/{transaction-type}/:id/documents',
+        description: [
+          'Creates a new document metadata entry for a transaction',
+          'Document upload must be completed separately using the upload URL endpoint',
+          'Returns the complete document metadata',
+          'Note: Replace {transaction-type} with either "cash-acquisitions" or "retail-sales"'
+        ],
+        requestHeaders: `Authorization: Bearer {access_token}
+Content-Type: application/json
+Accept: application/json`,
+        pathParams: [
+          {
+            name: 'transaction-type',
+            type: 'string',
+            required: true,
+            description: 'The type of transaction ("cash-acquisitions" or "retail-sales")'
+          },
+          {
+            name: 'id',
+            type: 'string',
+            required: true,
+            description: 'Transaction ID (must be exactly 18 characters in length)'
+          }
+        ],
+        requestBody: `{
+  "DocType": "Title_Commitment",
+  "OrderedDate": "2024-05-15T14:30:00.000Z",
+  "Status": "error generating doc"
+}`,
+        validationRules: [
+          'DocType must be a valid DocumentType enum value',
+          'OrderedDate, if provided, must be a valid ISO 8601 timestamp',
+          'Title company must be authorized for the specified transaction'
+        ],
+        responseExample: `{
+  "Id": "d15VH00000AbcdefGHI",
+  "DocumentId": "doc-12345678",
+  "DocType": "Title_Commitment",
+  "OrderedDate": "2024-05-15T14:30:00.000Z",
+  "UploadedDate": null,
+  "Status": "error generating doc"
+}`,
+        interfaceDefinition: `${documentInterfaces}\n\n// Shared interfaces\n${sharedInterfaces}`
+      },
+      {
+        title: 'Get Upload URL',
+        method: 'GET',
+        path: '{amherst-api-base}/v1/title-data/{transaction-type}/:id/documents/:documentId/upload-url',
+        description: [
+          'Generates a signed URL for uploading a document to cloud storage',
+          'URL will expire after 15 minutes',          
+          'Note: Replace {transaction-type} with either "cash-acquisitions" or "retail-sales"'
+        ],
+        requestHeaders: `Authorization: Bearer {access_token}
+Accept: application/json`,
+        pathParams: [
+          {
+            name: 'transaction-type',
+            type: 'string',
+            required: true,
+            description: 'The type of transaction ("cash-acquisitions" or "retail-sales")'
+          },
+          {
+            name: 'id',
+            type: 'string',
+            required: true,
+            description: 'Transaction ID (must be exactly 18 characters in length)'
+          },
+          {
+            name: 'documentId',
+            type: 'string',
+            required: true,
+            description: 'Document ID to generate upload URL for'
+          }
+        ],
+        responseExample: `{
+  "SignedURL": "https://amherst-storage.s3.amazonaws.com/documents/a13VH00000HjjopYAB/doc-12345678?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIOSFODNN7EXAMPLE%2F20240515%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20240515T123456Z&X-Amz-Expires=900&X-Amz-SignedHeaders=host&X-Amz-Signature=123456789abcdef"
+}`,
+        interfaceDefinition: `export interface UploadUrlResponse {
+  SignedURL: string
+}`
+      },
+      {
+        title: 'Update Document',
+        method: 'PATCH',
+        path: '{amherst-api-base}/v1/title-data/{transaction-type}/:id/documents/:documentId',
+        description: [
+          'Updates metadata for an existing document associated with a transaction',
+          'Can be used to update status, confirm upload, or modify ordered date',
+          'Returns the updated document metadata',
+          'Note: Replace {transaction-type} with either "cash-acquisitions" or "retail-sales"'
+        ],
+        requestHeaders: `Authorization: Bearer {access_token}
+Content-Type: application/json
+Accept: application/json`,
+        pathParams: [
+          {
+            name: 'transaction-type',
+            type: 'string',
+            required: true,
+            description: 'The type of transaction ("cash-acquisitions" or "retail-sales")'
+          },
+          {
+            name: 'id',
+            type: 'string',
+            required: true,
+            description: 'Transaction ID (must be exactly 18 characters in length)'
+          },
+          {
+            name: 'documentId',
+            type: 'string',
+            required: true,
+            description: 'Document ID to update ((must be exactly 18 characters in length)'
+          }
+        ],
+        requestBody: `{
+  "Status": "error processing document",
+  "OrderedDate": "2024-05-15T14:30:00.000Z"
+}`,
+        validationRules: [
+          'At least one of Status or OrderedDate must be provided',
+          'OrderedDate, if provided, must be a valid ISO 8601 timestamp',
+          'Title company must be authorized for the specified transaction'
+        ],
+        responseExample: `{
+  "Id": "d15VH00000AbcdefGHI",
+  "DocumentId": "doc-12345678",
+  "DocType": "Title_Commitment",
+  "OrderedDate": "2024-05-15T14:30:00.000Z",
+  "UploadedDate": null,
+  "Status": "error processing document"
+}`,
+        interfaceDefinition: `${documentInterfaces}\n\n// Shared interfaces\n${sharedInterfaces}`
+      },
+      {
+        title: 'List Documents',
+        method: 'GET',
+        path: '{amherst-api-base}/v1/title-data/{transaction-type}/:id/documents',
+        description: [
+          'Retrieves all documents associated with a transaction',
+          'Returns an array of document metadata objects',
+          'No pagination (returns all documents for the transaction)',
+          'Note: Replace {transaction-type} with either "cash-acquisitions" or "retail-sales"'
+        ],
+        requestHeaders: `Authorization: Bearer {access_token}
+Accept: application/json`,
+        pathParams: [
+          {
+            name: 'transaction-type',
+            type: 'string',
+            required: true,
+            description: 'The type of transaction ("cash-acquisitions" or "retail-sales")'
+          },
+          {
+            name: 'id',
+            type: 'string',
+            required: true,
+            description: 'Transaction ID (must be exactly 18 characters in length)'
+          }
+        ],
+        responseExample: `{
+  "data": [
+    {
+      "Id": "d15VH00000AbcdefGHI",
+      "DocumentId": "doc-12345678",
+      "DocType": "Title_Commitment",
+      "OrderedDate": "2024-05-15T14:30:00.000Z",
+      "UploadedDate": null,
+      "Status": "error processing document"
+    },
+    {
+      "Id": "d15VH00000JklmnoOPQ",
+      "DocumentId": "doc-87654321",
+      "DocType": "Deed",
+      "OrderedDate": "2024-05-15T14:30:00.000Z",
+      "UploadedDate": "2024-05-16T10:15:30.000Z",
+      "Status": null
+    }
+  ]
+}`,
+        interfaceDefinition: `${documentInterfaces}\n\n// Shared interfaces\n${sharedInterfaces}`
+      },
+      {
+        title: 'Get Document by ID',
+        method: 'GET',
+        path: '{amherst-api-base}/v1/title-data/{transaction-type}/:id/documents/:documentId',
+        description: [
+          'Retrieves metadata for a specific document associated with a transaction',
+          'Returns a single document metadata object',
+          'Note: Replace {transaction-type} with either "cash-acquisitions" or "retail-sales"'
+        ],
+        requestHeaders: `Authorization: Bearer {access_token}
+Accept: application/json`,
+        pathParams: [
+          {
+            name: 'transaction-type',
+            type: 'string',
+            required: true,
+            description: 'The type of transaction ("cash-acquisitions" or "retail-sales")'
+          },
+          {
+            name: 'id',
+            type: 'string',
+            required: true,
+            description: 'Transaction ID (must be exactly 18 characters in length)'
+          },
+          {
+            name: 'documentId',
+            type: 'string',
+            required: true,
+            description: 'Document ID to retrieve'
+          }
+        ],
+        responseExample: `{
+  "Id": "d15VH00000AbcdefGHI",
+  "DocumentId": "doc-12345678",
+  "DocType": "Title_Commitment",
+  "OrderedDate": "2024-05-15T14:30:00.000Z",
+  "UploadedDate": null,
+  "Status": null
+}`,
+        interfaceDefinition: `${documentInterfaces}\n\n// Shared interfaces\n${sharedInterfaces}`
+      },
+      {
+        title: 'List Amherst Documents',
+        method: 'GET',
+        path: '{amherst-api-base}/v1/title-data/{transaction-type}/:id/amherst-documents',
+        description: [
+          'Retrieves all Amherst-uploaded documents associated with a transaction',
+          'Returns an object with document types as keys and signed download URLs as values',
+          'Signed URLs will expire after 15 minutes',
+          'Note: Replace {transaction-type} with either "cash-acquisitions" or "retail-sales"'
+        ],
+        requestHeaders: `Authorization: Bearer {access_token}
+Accept: application/json`,
+        pathParams: [
+          {
+            name: 'transaction-type',
+            type: 'string',
+            required: true,
+            description: 'The type of transaction ("cash-acquisitions" or "retail-sales")'
+          },
+          {
+            name: 'id',
+            type: 'string',
+            required: true,
+            description: 'Transaction ID (must be exactly 18 characters in length)'
+          }
+        ],
+        responseExample: `{
+  "Title_Commitment": "https://amherst-storage.s3.amazonaws.com/documents/a13VH00000HjjopYAB/amherst-title-commitment.pdf?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIOSFODNN7EXAMPLE%2F20240515%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20240515T123456Z&X-Amz-Expires=900&X-Amz-SignedHeaders=host&X-Amz-Signature=123456789abcdef",
+  "Deed": "https://amherst-storage.s3.amazonaws.com/documents/a13VH00000HjjopYAB/amherst-deed.pdf?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIOSFODNN7EXAMPLE%2F20240515%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20240515T123456Z&X-Amz-Expires=900&X-Amz-SignedHeaders=host&X-Amz-Signature=123456789abcdef"
+}`,
+        interfaceDefinition: `export interface AmherstDocumentsResponse {
+  [key in DocumentType]?: string
+}
+
+export enum DocumentType {
+  AFFIDAVIT = 'Affidavit',
+  ASSIGNMENT_OF_LEASE = 'Assignment_Of_Lease',
+  BUYER_CLOSING_DOCS = 'Buyer_Closing_Docs',
+  CCR = 'CCR',
+  CLOSING_DISCLOSURE = 'Closing_Disclosure',
+  DEED = 'Deed',
+  ESCROW_AGREEMENT = 'Escrow_Agreement',
+  EXECUTED_DEED = 'Executed_Deed',
+  FINAL_CONTRACT_AND_AMENDMENTS = 'Final_Contract_And_Amendments',
+  FINAL_HUD = 'Final_HUD',
+  FIRPTA = 'FIRPTA',
+  HOA_CERTIFICATE = 'HOA_Certificate',
+  LEASE = 'Lease',
+  LEASEBACK = 'Leaseback',
+  MLC = 'MLC',
+  MORTGAGE = 'Mortgage',
+  NO_HOA_CONFIRMATION = 'No_HOA_Confirmation',
+  NON_FOREIGN_CERT = 'Non_Foreign_Cert',
+  PLAT_MAP = 'Plat_Map',
+  RECORDED_DEED = 'Recorded_Deed',
+  SCHEDULE_B = 'Schedule_B',
+  SETTLEMENT_STATEMENT = 'Settlement_Statement',
+  SURVEY = 'Survey',
+  TAX_CERTIFICATE = 'Tax_Certificate',
+  TITLE_COMMITMENT = 'Title_Commitment',
+  TITLE_POLICY = 'Title_Policy',
+  UNEXECUTED_DEED = 'Unexecuted_Deed'
+}`
       }
     ]
   },
@@ -972,35 +1302,33 @@ Accept: application/json`,
           }
         ],
         responseExample: `{
-  "data": {
-    "Id": "a13VH00000HjjopYAC",
-    "AlternatePropertyId": "Amherst ID",
-    "AnticipatedCloseDate": "2024-03-31",
-    "HOA": {
-      "Contact": "John Smith", 
-      "Email": "info@woodlandhillshoa.com",
-      "MailingAddress": "PO Box 12345, Austin, TX 78701",
-      "ManagementCompany": "Premier Community Management",
-      "Name": "Woodland Hills HOA",
-      "PhoneNumber": "512-555-1234",
-      "Website": "www.woodlandhillshoa.com"
-    },
-    "LastModifiedDateTime": "2024-03-15T14:30:00.000+0000",
-    "NewAssetCoName": "ARMM Asset Company 3 LLC",
-    "Property": {
-      "City": "Austin",
-      "County": "Travis",
-      "State": "TX",
-      "Street": "123 Main Street",
-      "Zip": "78746"
-    },
-    "ReadyToClose": false,
-    "ReadyToFund": false,
-    "SellerName": "Amherst Entity, LLC",
-    "TitleCompany": "First American Title",
-    "TransactionName": "Portfolio Sale 2024-Q1",
-    "Type": "Bulk Sale - Servicing Retained"
-  }
+  "Id": "a13VH00000HjjopYAC",
+  "AlternatePropertyId": "Amherst ID",
+  "AnticipatedCloseDate": "2024-03-31",
+  "HOA": {
+    "Contact": "John Smith", 
+    "Email": "info@woodlandhillshoa.com",
+    "MailingAddress": "PO Box 12345, Austin, TX 78701",
+    "ManagementCompany": "Premier Community Management",
+    "Name": "Woodland Hills HOA",
+    "PhoneNumber": "512-555-1234",
+    "Website": "www.woodlandhillshoa.com"
+  },
+  "LastModifiedDateTime": "2024-03-15T14:30:00.000+0000",
+  "NewAssetCoName": "ARMM Asset Company 3 LLC",
+  "Property": {
+    "City": "Austin",
+    "County": "Travis",
+    "State": "TX",
+    "Street": "123 Main Street",
+    "Zip": "78746"
+  },
+  "ReadyToClose": false,
+  "ReadyToFund": false,
+  "SellerName": "Amherst Entity, LLC",
+  "TitleCompany": "First American Title",
+  "TransactionName": "Portfolio Sale 2024-Q1",
+  "Type": "Bulk Sale - Servicing Retained"
 }`,
         interfaceDefinition: `${portfolioInterface}\n\n// Shared interfaces\n${sharedInterfaces}`
       }
@@ -1055,13 +1383,35 @@ export const notes = [
   'Use the pagination links provided in the response to navigate through the results',
   'All GET by ID endpoints only accept IDs that are exactly 18 characters in length',
   'Your access token determines which data you can access - you will only see data for entities you are authorized to view',
-  'The ClosedAndFunded field can only be set to true if ReadyToClose and ReadyToFund are already true'
+  'The ClosedAndFunded field can only be set to true if ReadyToClose and ReadyToFund are already true',
+  'Document uploads must be performed using the signed URL provided by the upload-url endpoint',
+  'Uploaded documents are only accessible to authorized title companies specified in the token',
+  'Signed URLs for document uploads expire after 15 minutes',
 ];
 
 export const versionHistory = [
   {
+    version: 'v1.4.0',
+    date: '2024-05-20',
+    author: 'David Brown',
+    environments: {
+      qa: false,
+      prod: false
+    },
+    changes: [
+      'Cash Acquisitions and Retail Sales:',
+      '- Added document management endpoints to both resources:',
+      '- - New POST /:id/documents endpoint to create document metadata',
+      '- - New GET /:id/documents/:documentId/upload-url endpoint to get signed upload URL',
+      '- - New PATCH /:id/documents/:documentId endpoint to update document metadata',
+      '- - New GET /:id/documents endpoint to list all documents for a transaction',
+      '- - New GET /:id/documents/:documentId endpoint to get specific document metadata',
+      '- - New GET /:id/amherst-documents endpoint to get Amherst-uploaded documents',
+    ]
+  },
+  {
     version: 'v1.3.0',
-    date: '2025-04-15',
+    date: '2024-04-15',
     author: 'David Brown',
     environments: {
       qa: true,
@@ -1079,7 +1429,7 @@ export const versionHistory = [
   },
   {
     version: 'v1.2.1',
-    date: '2025-03-20',
+    date: '2024-03-20',
     author: 'David Brown',
     environments: {
       qa: true,
@@ -1096,7 +1446,7 @@ export const versionHistory = [
   },
   {
     version: 'v1.2.0',
-    date: '2025-03-15',
+    date: '2024-03-15',
     author: 'David Brown',
     environments: {
       qa: true,
@@ -1114,7 +1464,7 @@ export const versionHistory = [
   },
   {
     version: 'v1.1.0',
-    date: '2025-02-27',
+    date: '2024-02-27',
     author: 'David Brown',
     environments: {
       qa: true,
@@ -1145,7 +1495,7 @@ export const versionHistory = [
   },
   {
     version: 'v1.0.2',
-    date: '2025-01-30',
+    date: '2024-01-30',
     author: 'David Brown',
     environments: {
       qa: true,
@@ -1157,7 +1507,7 @@ export const versionHistory = [
   },
   {
     version: 'v1.0.1',
-    date: '2025-01-29',
+    date: '2024-01-29',
     author: 'David Brown',
     environments: {
       qa: true,
@@ -1169,7 +1519,7 @@ export const versionHistory = [
   },
   {
     version: 'v1.0.0',
-    date: '2025-01-23',
+    date: '2024-01-23',
     author: 'David Brown',
     environments: {
       qa: true,

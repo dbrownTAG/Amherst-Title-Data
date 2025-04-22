@@ -20,7 +20,7 @@ const Home: React.FC = () => {
           gutterBottom
           sx={{ fontWeight: 600, mb: 3, color: "#00487a" }}
         >
-          Title Data v1.3.0
+          Title Data v1.4.0
         </Typography>
         <Typography
           variant="body1"
@@ -271,6 +271,48 @@ const Home: React.FC = () => {
                 }}
               >
                 View Bulk Portfolio →
+              </Link>
+            </CardContent>
+          </Card>
+        </Grid>
+
+        <Grid item xs={12} sm={6} md={4}>
+          <Card
+            elevation={0}
+            sx={{
+              borderRadius: 2,
+              border: "1px solid #E2E8F0",
+              transition: "all 0.2s ease-in-out",
+              "&:hover": {
+                borderColor: "secondary.main",
+                transform: "translateY(-4px)",
+                boxShadow: "0 10px 20px rgba(0,0,0,0.05)",
+              },
+            }}
+          >
+            <CardContent sx={{ p: 3 }}>
+              <Typography variant="h6" sx={{ fontWeight: 600, mb: 2 }}>
+                Document Management
+              </Typography>
+              <Typography
+                variant="body2"
+                sx={{ color: "text.secondary", mb: 2 }}
+              >
+                Create, update, and retrieve documents for transactions.
+              </Typography>
+              <Link
+                component={RouterLink}
+                to="/document-management"
+                sx={{
+                  color: "secondary.main",
+                  fontWeight: 500,
+                  textDecoration: "none",
+                  "&:hover": {
+                    textDecoration: "underline",
+                  },
+                }}
+              >
+                View Document Management →
               </Link>
             </CardContent>
           </Card>

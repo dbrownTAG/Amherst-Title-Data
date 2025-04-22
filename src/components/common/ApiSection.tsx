@@ -1,7 +1,7 @@
 import React from 'react';
 import { Typography, Paper, Box } from '@mui/material';
 import { useParams } from 'react-router-dom';
-import { apiData } from '../../data/apiData';
+import { apiData, ApiEndpoint } from '../../data/apiData';
 import EndpointDetails from '../endpoints/EndpointDetails';
 
 interface ApiSectionProps {
@@ -22,11 +22,32 @@ const ApiSection: React.FC<ApiSectionProps> = ({ sectionId }) => {
     );
   }
 
+  // Function to find an endpoint recursively by ID
+  const findEndpointById = (endpoints: ApiEndpoint[], id: string): ApiEndpoint | undefined => {
+    // Try to find the endpoint directly in this array
+    const endpoint = endpoints.find(e => 
+      e.title.toLowerCase().replace(/\s+/g, '-') === id
+    );
+    
+    if (endpoint) return endpoint;
+    
+    // If not found, search in nested endpoints
+    for (const ep of endpoints) {
+      if (ep.endpoints) {
+        const nestedEndpoint = ep.endpoints.find(ne => 
+          ne.title.toLowerCase().replace(/\s+/g, '-') === id
+        );
+        
+        if (nestedEndpoint) return nestedEndpoint;
+      }
+    }
+    
+    return undefined;
+  };
+
   // If we have an endpointId, show only that endpoint
   if (endpointId) {
-    const endpoint = section.endpoints.find(
-      e => e.title.toLowerCase().replace(/\s+/g, '-') === endpointId
-    );
+    const endpoint = findEndpointById(section.endpoints, endpointId);
 
     if (!endpoint) {
       return (

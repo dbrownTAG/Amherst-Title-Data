@@ -1,0 +1,33 @@
+.methodLabel {
+  display: inline-block !important;
+  width: 50px !important;
+  text-align: center !important;
+  min-width: 50px !important;
+  flex-shrink: 0 !important;
+  margin-right: 6px !important;
+}
+
+.get {
+  background-color: rgba(16, 185, 129, 0.12) !important;
+  color: #10B981 !important;
+}
+
+.post {
+  background-color: rgba(59, 130, 246, 0.12) !important;
+  color: #3B82F6 !important;
+}
+
+.patch {
+  background-color: rgba(245, 158, 11, 0.12) !important;
+  color: #F59E0B !important;
+}
+
+.delete {
+  background-color: rgba(239, 68, 68, 0.12) !important;
+  color: #EF4444 !important;
+}
+
+.put {
+  background-color: rgba(139, 92, 246, 0.12) !important;
+  color: #8B5CF6 !important;
+} 
