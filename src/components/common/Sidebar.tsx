@@ -56,18 +56,6 @@ const Sidebar: React.FC = () => {
     }
   };
 
-  const methodColors = {
-    GET: '#10B981',
-    POST: '#3B82F6',
-    PATCH: '#F59E0B',
-    DELETE: '#EF4444',
-    PUT: '#8B5CF6',
-  };
-
-  const getMethodColor = (method: string) => {
-    return methodColors[method as keyof typeof methodColors] || theme.palette.grey[500];
-  };
-
   // Initialize section open state based on current path
   React.useEffect(() => {
     const currentSection = apiData.find(section => 

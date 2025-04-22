@@ -1,5 +1,5 @@
 import React from 'react';
-import { Typography, Paper, Box, Chip, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, useTheme, Divider, Breadcrumbs, Link } from '@mui/material';
+import { Typography, Paper, Box, Chip, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, useTheme, Breadcrumbs } from '@mui/material';
 import { Link as RouterLink, useLocation } from 'react-router-dom';
 import { ApiEndpoint } from '../../data/apiData';
 import CodeBlock from '../common/CodeBlock';
@@ -13,7 +13,6 @@ interface EndpointDetailsProps {
 const EndpointDetails: React.FC<EndpointDetailsProps> = ({ endpoint, sectionId }) => {
   const theme = useTheme();
   const location = useLocation();
-  const endpointId = endpoint.title.toLowerCase().replace(/\s+/g, '-');
   const isListEndpoint = endpoint.title.startsWith('List');
   const hasNestedEndpoints = endpoint.endpoints && endpoint.endpoints.length > 0;
   const isDocumentEndpoint = location.pathname.includes('document') && 
