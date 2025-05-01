@@ -117,17 +117,17 @@ export enum PortfolioTransactionType {
 }`;
 
 const sharedInterfaces = `export interface Address {
-  City: string
-  County: string
-  State: string
-  Street: string
-  Zip: string
+  Street: string | null
+  City: string | null
+  County: string | null
+  State: string | null
+  Zip: string | null
 }
 
 export interface ContactName {
-  FirstName: string
+  FirstName: string | null
   MiddleName: string | null
-  LastName: string
+  LastName: string | null
 }
 
 export interface HOA {
@@ -143,7 +143,7 @@ export interface HOA {
 // Document interfaces
 const documentInterfaces = `export interface Document {
   Id: string
-  DocumentId: string
+  Name: string
   DocType: DocumentType
   OrderedDate: string | null
   UploadedDate: string | null
@@ -862,17 +862,19 @@ Accept: application/json`,
         ],
         requestBody: `{
   "DocType": "Title_Commitment",
+  "Name": "Title_Commitment.pdf",
   "OrderedDate": "2024-05-15T14:30:00.000Z",
   "Status": "error generating doc"
 }`,
         validationRules: [
           'DocType must be a valid DocumentType enum value',
+          'Name must be a valid filename with appropriate extension',
           'OrderedDate, if provided, must be a valid ISO 8601 timestamp',
           'Title company must be authorized for the specified transaction'
         ],
         responseExample: `{
   "Id": "d15VH00000AbcdefGHI",
-  "DocumentId": "doc-12345678",
+  "Name": "Title_Commitment.pdf",
   "DocType": "Title_Commitment",
   "OrderedDate": "2024-05-15T14:30:00.000Z",
   "UploadedDate": null,
@@ -908,11 +910,11 @@ Accept: application/json`,
             name: 'documentId',
             type: 'string',
             required: true,
-            description: 'Document ID to generate upload URL for'
+            description: 'Document ID to generate upload URL for (must be exactly 18 characters in length)'
           }
         ],
         responseExample: `{
-  "SignedURL": "https://amherst-storage.s3.amazonaws.com/documents/a13VH00000HjjopYAB/doc-12345678?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIOSFODNN7EXAMPLE%2F20240515%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20240515T123456Z&X-Amz-Expires=900&X-Amz-SignedHeaders=host&X-Amz-Signature=123456789abcdef"
+  "SignedURL": "https://amherst-storage.s3.amazonaws.com/documents/a13VH00000HjjopYAB/Title_Commitment.pdf?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIOSFODNN7EXAMPLE%2F20240515%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20240515T123456Z&X-Amz-Expires=900&X-Amz-SignedHeaders=host&X-Amz-Signature=123456789abcdef"
 }`,
         interfaceDefinition: `export interface UploadUrlResponse {
   SignedURL: string
@@ -948,21 +950,23 @@ Accept: application/json`,
             name: 'documentId',
             type: 'string',
             required: true,
-            description: 'Document ID to update ((must be exactly 18 characters in length)'
+            description: 'Document ID to update (must be exactly 18 characters in length)'
           }
         ],
         requestBody: `{
   "Status": "error processing document",
+  "Name": "Updated_Title_Commitment.pdf",
   "OrderedDate": "2024-05-15T14:30:00.000Z"
 }`,
         validationRules: [
-          'At least one of Status or OrderedDate must be provided',
+          'At least one of Status, Name, or OrderedDate must be provided',
+          'Name, if provided, must be a valid filename with appropriate extension',
           'OrderedDate, if provided, must be a valid ISO 8601 timestamp',
           'Title company must be authorized for the specified transaction'
         ],
         responseExample: `{
   "Id": "d15VH00000AbcdefGHI",
-  "DocumentId": "doc-12345678",
+  "Name": "Title_Commitment.pdf",
   "DocType": "Title_Commitment",
   "OrderedDate": "2024-05-15T14:30:00.000Z",
   "UploadedDate": null,
@@ -1000,7 +1004,7 @@ Accept: application/json`,
   "data": [
     {
       "Id": "d15VH00000AbcdefGHI",
-      "DocumentId": "doc-12345678",
+      "Name": "Title_Commitment.pdf",
       "DocType": "Title_Commitment",
       "OrderedDate": "2024-05-15T14:30:00.000Z",
       "UploadedDate": null,
@@ -1008,7 +1012,7 @@ Accept: application/json`,
     },
     {
       "Id": "d15VH00000JklmnoOPQ",
-      "DocumentId": "doc-87654321",
+      "Name": "Deed.pdf",
       "DocType": "Deed",
       "OrderedDate": "2024-05-15T14:30:00.000Z",
       "UploadedDate": "2024-05-16T10:15:30.000Z",
@@ -1046,12 +1050,12 @@ Accept: application/json`,
             name: 'documentId',
             type: 'string',
             required: true,
-            description: 'Document ID to retrieve'
+            description: 'Document ID to retrieve (must be exactly 18 characters in length)'
           }
         ],
         responseExample: `{
   "Id": "d15VH00000AbcdefGHI",
-  "DocumentId": "doc-12345678",
+  "Name": "Title_Commitment.pdf",
   "DocType": "Title_Commitment",
   "OrderedDate": "2024-05-15T14:30:00.000Z",
   "UploadedDate": null,
@@ -1182,17 +1186,17 @@ export interface PortfolioTitleData {
 Referenced shared interfaces:
 \`\`\`typescript
 export interface Address {
-  City: string
-  County: string
-  State: string
-  Street: string
-  Zip: string
+  Street: string | null
+  City: string | null
+  County: string | null
+  State: string | null
+  Zip: string | null
 }
 
 export interface ContactName {
-  FirstName: string
+  FirstName: string | null
   MiddleName: string | null
-  LastName: string
+  LastName: string | null
 }
 
 export interface HOA {
@@ -1391,8 +1395,24 @@ export const notes = [
 
 export const versionHistory = [
   {
-    version: 'v1.4.0',
+    version: 'v1.4.1',
     date: '2024-05-20',
+    author: 'David Brown',
+    environments: {
+      qa: false,
+      prod: false
+    },
+    changes: [
+      'Document Management:',
+      '- Updated Document interface to replace DocumentId with Name field (the actual filename)',
+      '- Added Name field to document Create and Update request bodies',
+      'Shared Interfaces:',
+      '- Updated Address and ContactName interfaces to make all properties nullable'
+    ]
+  },
+  {
+    version: 'v1.4.0',
+    date: '2024-05-15',
     author: 'David Brown',
     environments: {
       qa: false,

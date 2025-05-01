@@ -20,7 +20,7 @@ const Home: React.FC = () => {
           gutterBottom
           sx={{ fontWeight: 600, mb: 3, color: "#00487a" }}
         >
-          Title Data v1.4.0
+          Title Data v1.4.1
         </Typography>
         <Typography
           variant="body1"

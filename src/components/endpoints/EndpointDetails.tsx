@@ -191,6 +191,96 @@ const EndpointDetails: React.FC<EndpointDetailsProps> = ({ endpoint, sectionId }
           </Box>
         )}
 
+        {ep.method === 'POST' && ep.title.includes('Create Document') && (
+          <Box sx={{ mb: 4 }}>
+            <Typography variant="h6" gutterBottom sx={{ fontWeight: 600 }}>
+              Request Body Fields
+            </Typography>
+            <TableContainer sx={{ border: '1px solid #E2E8F0', borderRadius: 1 }}>
+              <Table>
+                <TableHead sx={{ backgroundColor: '#f5f2e8' }}>
+                  <TableRow>
+                    <TableCell sx={{ fontWeight: 600 }}>Field</TableCell>
+                    <TableCell sx={{ fontWeight: 600 }}>Type</TableCell>
+                    <TableCell sx={{ fontWeight: 600 }}>Required</TableCell>
+                    <TableCell sx={{ fontWeight: 600 }}>Description</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  <TableRow>
+                    <TableCell sx={{ fontFamily: 'monospace', fontWeight: 500 }}>DocType</TableCell>
+                    <TableCell>string (enum)</TableCell>
+                    <TableCell>
+                      <Chip 
+                        label="Required" 
+                        size="small"
+                        sx={{ 
+                          backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                          color: '#EF4444',
+                          fontWeight: 500,
+                          fontSize: '0.75rem'
+                        }}
+                      />
+                    </TableCell>
+                    <TableCell>Document type from the DocumentType enum</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell sx={{ fontFamily: 'monospace', fontWeight: 500 }}>Name</TableCell>
+                    <TableCell>string</TableCell>
+                    <TableCell>
+                      <Chip 
+                        label="Optional" 
+                        size="small"
+                        sx={{ 
+                          backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                          color: '#10B981',
+                          fontWeight: 500,
+                          fontSize: '0.75rem'
+                        }}
+                      />
+                    </TableCell>
+                    <TableCell>Filename with extension (e.g., "Title_Commitment.pdf")</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell sx={{ fontFamily: 'monospace', fontWeight: 500 }}>OrderedDate</TableCell>
+                    <TableCell>string</TableCell>
+                    <TableCell>
+                      <Chip 
+                        label="Optional" 
+                        size="small"
+                        sx={{ 
+                          backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                          color: '#10B981',
+                          fontWeight: 500,
+                          fontSize: '0.75rem'
+                        }}
+                      />
+                    </TableCell>
+                    <TableCell>ISO 8601 timestamp when the document was ordered</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell sx={{ fontFamily: 'monospace', fontWeight: 500 }}>Status</TableCell>
+                    <TableCell>string</TableCell>
+                    <TableCell>
+                      <Chip 
+                        label="Optional" 
+                        size="small"
+                        sx={{ 
+                          backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                          color: '#10B981',
+                          fontWeight: 500,
+                          fontSize: '0.75rem'
+                        }}
+                      />
+                    </TableCell>
+                    <TableCell>Error message or status information for the document</TableCell>
+                  </TableRow>
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </Box>
+        )}
+
         {ep.method === 'PATCH' && ep.requestBody && (
           <Box sx={{ mb: 4 }}>
             <Typography variant="h6" gutterBottom sx={{ fontWeight: 600 }}>
@@ -263,6 +353,23 @@ const EndpointDetails: React.FC<EndpointDetailsProps> = ({ endpoint, sectionId }
                           />
                         </TableCell>
                         <TableCell>Error message or status information for the document</TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell sx={{ fontFamily: 'monospace', fontWeight: 500 }}>Name</TableCell>
+                        <TableCell>string</TableCell>
+                        <TableCell>
+                          <Chip 
+                            label="Optional" 
+                            size="small"
+                            sx={{ 
+                              backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                              color: '#10B981',
+                              fontWeight: 500,
+                              fontSize: '0.75rem'
+                            }}
+                          />
+                        </TableCell>
+                        <TableCell>Filename with extension (e.g., "Updated_Title_Commitment.pdf")</TableCell>
                       </TableRow>
                       <TableRow>
                         <TableCell sx={{ fontFamily: 'monospace', fontWeight: 500 }}>OrderedDate</TableCell>
