@@ -259,7 +259,7 @@ const EndpointDetails: React.FC<EndpointDetailsProps> = ({ endpoint, sectionId }
                     <TableCell>ISO 8601 timestamp when the document was ordered</TableCell>
                   </TableRow>
                   <TableRow>
-                    <TableCell sx={{ fontFamily: 'monospace', fontWeight: 500 }}>Status</TableCell>
+                    <TableCell sx={{ fontFamily: 'monospace', fontWeight: 500 }}>Notes</TableCell>
                     <TableCell>string</TableCell>
                     <TableCell>
                       <Chip 
@@ -273,7 +273,7 @@ const EndpointDetails: React.FC<EndpointDetailsProps> = ({ endpoint, sectionId }
                         }}
                       />
                     </TableCell>
-                    <TableCell>Error message or status information for the document</TableCell>
+                    <TableCell>Additional notes or comments about the document</TableCell>
                   </TableRow>
                 </TableBody>
               </Table>
@@ -338,7 +338,7 @@ const EndpointDetails: React.FC<EndpointDetailsProps> = ({ endpoint, sectionId }
                   {ep.title.includes('Document') && (
                     <>
                       <TableRow>
-                        <TableCell sx={{ fontFamily: 'monospace', fontWeight: 500 }}>Status</TableCell>
+                        <TableCell sx={{ fontFamily: 'monospace', fontWeight: 500 }}>Notes</TableCell>
                         <TableCell>string</TableCell>
                         <TableCell>
                           <Chip 
@@ -352,7 +352,7 @@ const EndpointDetails: React.FC<EndpointDetailsProps> = ({ endpoint, sectionId }
                             }}
                           />
                         </TableCell>
-                        <TableCell>Error message or status information for the document</TableCell>
+                        <TableCell>Additional notes or comments about the document</TableCell>
                       </TableRow>
                       <TableRow>
                         <TableCell sx={{ fontFamily: 'monospace', fontWeight: 500 }}>Name</TableCell>

@@ -148,6 +148,9 @@ const documentInterfaces = `export interface Document {
   OrderedDate: string | null
   UploadedDate: string | null
   Status: string | null
+  Notes: string | null
+  Approved: boolean
+  Rejected: boolean
 }
 
 export enum DocumentType {
@@ -864,12 +867,12 @@ Accept: application/json`,
   "DocType": "Title_Commitment",
   "Name": "Title_Commitment.pdf",
   "OrderedDate": "2024-05-15T14:30:00.000Z",
-  "Status": "error generating doc"
 }`,
         validationRules: [
           'DocType must be a valid DocumentType enum value',
           'Name must be a valid filename with appropriate extension',
           'OrderedDate, if provided, must be a valid ISO 8601 timestamp',
+          'Notes, if provided, must be a string',
           'Title company must be authorized for the specified transaction'
         ],
         responseExample: `{
@@ -878,7 +881,10 @@ Accept: application/json`,
   "DocType": "Title_Commitment",
   "OrderedDate": "2024-05-15T14:30:00.000Z",
   "UploadedDate": null,
-  "Status": "error generating doc"
+  "Status": null,
+  "Notes": null,
+  "Approved": false,
+  "Rejected": false
 }`,
         interfaceDefinition: `${documentInterfaces}\n\n// Shared interfaces\n${sharedInterfaces}`
       },
@@ -926,7 +932,7 @@ Accept: application/json`,
         path: '{amherst-api-base}/v1/title-data/{transaction-type}/:id/documents/:documentId',
         description: [
           'Updates metadata for an existing document associated with a transaction',
-          'Can be used to update status, confirm upload, or modify ordered date',
+          'Can be used to update notes, confirm upload, or modify ordered date',
           'Returns the updated document metadata',
           'Note: Replace {transaction-type} with either "cash-acquisitions" or "retail-sales"'
         ],
@@ -954,23 +960,27 @@ Accept: application/json`,
           }
         ],
         requestBody: `{
-  "Status": "error processing document",
+  "Notes": "Updated document notes",
   "Name": "Updated_Title_Commitment.pdf",
   "OrderedDate": "2024-05-15T14:30:00.000Z"
 }`,
         validationRules: [
-          'At least one of Status, Name, or OrderedDate must be provided',
+          'At least one of Notes, Name, or OrderedDate must be provided',
           'Name, if provided, must be a valid filename with appropriate extension',
           'OrderedDate, if provided, must be a valid ISO 8601 timestamp',
+          'Notes, if provided, must be a string',
           'Title company must be authorized for the specified transaction'
         ],
         responseExample: `{
   "Id": "d15VH00000AbcdefGHI",
-  "Name": "Title_Commitment.pdf",
+  "Name": "Title_Commitment_2.pdf",
   "DocType": "Title_Commitment",
   "OrderedDate": "2024-05-15T14:30:00.000Z",
   "UploadedDate": null,
-  "Status": "error processing document"
+  "Status": "Approved",
+  "Notes": "Revision on 5/2/2025",
+  "Approved": true,
+  "Rejected": false
 }`,
         interfaceDefinition: `${documentInterfaces}\n\n// Shared interfaces\n${sharedInterfaces}`
       },
@@ -1008,7 +1018,10 @@ Accept: application/json`,
       "DocType": "Title_Commitment",
       "OrderedDate": "2024-05-15T14:30:00.000Z",
       "UploadedDate": null,
-      "Status": "error processing document"
+      "Status": "Rejected: Required signature missing",
+      "Notes": null,
+      "Approved": false,
+      "Rejected": true
     },
     {
       "Id": "d15VH00000JklmnoOPQ",
@@ -1016,7 +1029,10 @@ Accept: application/json`,
       "DocType": "Deed",
       "OrderedDate": "2024-05-15T14:30:00.000Z",
       "UploadedDate": "2024-05-16T10:15:30.000Z",
-      "Status": null
+      "Status": "Approved",
+      "Notes": null,
+      "Approved": true,
+      "Rejected": false
     }
   ]
 }`,
@@ -1059,7 +1075,10 @@ Accept: application/json`,
   "DocType": "Title_Commitment",
   "OrderedDate": "2024-05-15T14:30:00.000Z",
   "UploadedDate": null,
-  "Status": null
+  "Status": null,
+  "Notes": null,
+  "Approved": false,
+  "Rejected": false
 }`,
         interfaceDefinition: `${documentInterfaces}\n\n// Shared interfaces\n${sharedInterfaces}`
       },
@@ -1395,8 +1414,24 @@ export const notes = [
 
 export const versionHistory = [
   {
+    version: 'v1.4.2',
+    date: '2025-05-02',
+    author: 'David Brown',
+    environments: {
+      qa: false,
+      prod: false
+    },
+    changes: [
+      'Document Management:',
+      '- Added new fields to Document interface: Notes, Approved, Rejected',
+      '- Removed Status field from document Create and PATCH requests',
+      '- Added Notes field to document Create and PATCH requests',
+      '- Updated all document-related endpoint responses to include new fields'
+    ]
+  },
+  {
     version: 'v1.4.1',
-    date: '2024-05-20',
+    date: '2025-04-27',
     author: 'David Brown',
     environments: {
       qa: false,
@@ -1412,7 +1447,7 @@ export const versionHistory = [
   },
   {
     version: 'v1.4.0',
-    date: '2024-05-15',
+    date: '2025-04-15',
     author: 'David Brown',
     environments: {
       qa: false,
@@ -1431,7 +1466,7 @@ export const versionHistory = [
   },
   {
     version: 'v1.3.0',
-    date: '2024-04-15',
+    date: '2025-04-05',
     author: 'David Brown',
     environments: {
       qa: true,
@@ -1449,7 +1484,7 @@ export const versionHistory = [
   },
   {
     version: 'v1.2.1',
-    date: '2024-03-20',
+    date: '2025-03-20',
     author: 'David Brown',
     environments: {
       qa: true,
@@ -1466,7 +1501,7 @@ export const versionHistory = [
   },
   {
     version: 'v1.2.0',
-    date: '2024-03-15',
+    date: '2025-03-15',
     author: 'David Brown',
     environments: {
       qa: true,
@@ -1484,7 +1519,7 @@ export const versionHistory = [
   },
   {
     version: 'v1.1.0',
-    date: '2024-02-27',
+    date: '2025-02-27',
     author: 'David Brown',
     environments: {
       qa: true,
@@ -1515,7 +1550,7 @@ export const versionHistory = [
   },
   {
     version: 'v1.0.2',
-    date: '2024-01-30',
+    date: '2025-01-30',
     author: 'David Brown',
     environments: {
       qa: true,
@@ -1527,7 +1562,7 @@ export const versionHistory = [
   },
   {
     version: 'v1.0.1',
-    date: '2024-01-29',
+    date: '2025-01-29',
     author: 'David Brown',
     environments: {
       qa: true,
@@ -1539,7 +1574,7 @@ export const versionHistory = [
   },
   {
     version: 'v1.0.0',
-    date: '2024-01-23',
+    date: '2025-01-23',
     author: 'David Brown',
     environments: {
       qa: true,
@@ -1549,4 +1584,4 @@ export const versionHistory = [
       'Initial spec with List Cash Acquisitions and List Retail Sales endpoints'
     ]
   }
-]; 
+];
