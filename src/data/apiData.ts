@@ -154,39 +154,36 @@ const documentInterfaces = `export interface Document {
 }
 
 export enum DocumentType {
-  AFFIDAVIT = 'Affidavit',
-  ASSIGNMENT_OF_LEASE = 'Assignment_Of_Lease',
+  ASSIGNMENT_OF_LEASE = 'Assignment_of_Lease',
   BUYER_CLOSING_DOCS = 'Buyer_Closing_Docs',
   CCR = 'CCR',
-  CLOSING_DISCLOSURE = 'Closing_Disclosure',
-  DEED = 'Deed',
-  ESCROW_AGREEMENT = 'Escrow_Agreement',
+  COMPILED_MORTGAGES = 'Compiled_Mortgages',
+  COMPILED_RELEASES = 'Compiled_Releases',
+  COMMISSION_INSTRUCTIONS = 'Commission_Instructions',
+  CONFIRMATION_OF_NO_HOA = 'Confirmation_of_no_HOA',
   EXECUTED_DEED = 'Executed_Deed',
-  FINAL_CONTRACT_AND_AMENDMENTS = 'Final_Contract_And_Amendments',
+  FINAL_CONTRACT_AND_AMENDMENTS = 'Final_Contract_and_Amendments',
   FINAL_HUD = 'Final_HUD',
   FIRPTA = 'FIRPTA',
-  HOA_CERTIFICATE = 'HOA_Certificate',
-  LEASE = 'Lease',
-  LEASEBACK = 'Leaseback',
+  HOA_CERT = 'HOA_Cert',
   MLC = 'MLC',
-  MORTGAGE = 'Mortgage',
-  NO_HOA_CONFIRMATION = 'No_HOA_Confirmation',
   NON_FOREIGN_CERT = 'Non_Foreign_Cert',
+  PAYOFF = 'Payoff',
   PLAT_MAP = 'Plat_Map',
   RECORDED_DEED = 'Recorded_Deed',
   SCHEDULE_B = 'Schedule_B',
-  SETTLEMENT_STATEMENT = 'Settlement_Statement',
-  SURVEY = 'Survey',
-  TAX_CERTIFICATE = 'Tax_Certificate',
+  TAX_CERT = 'Tax_Cert',
   TITLE_COMMITMENT = 'Title_Commitment',
   TITLE_POLICY = 'Title_Policy',
-  UNEXECUTED_DEED = 'Unexecuted_Deed'
+  UNEXECUTED_DEED = 'Unexecuted_Deed',
+  WIRE_CONFIRMATION = 'Wire_Confirmation',
 }`;
 
 export const apiData: ApiSection[] = [
   {
     id: 'cash-acquisitions',
     title: 'Cash Acquisitions',
+    description: 'Note: As of v1.4.3, the State field in Property objects returns standardized two-letter state codes (e.g., "TX", "FL") instead of full state names.',
     responseObject: `{
   "Id": "a13VH00000HjjopYAB", // string - 18 character ID
   "AlternatePropertyId": "10003399", // string
@@ -288,13 +285,13 @@ Accept: application/json`,
         queryParams: [
           {
             name: 'page',
-            type: 'integer',
+            type: 'number',
             required: false,
             description: 'Page number (default: 1)'
           },
           {
             name: 'pageSize',
-            type: 'integer',
+            type: 'number',
             required: false,
             description: 'Number of items per page (default: 100, max: 2000)'
           }
@@ -622,13 +619,13 @@ Accept: application/json`,
         queryParams: [
           {
             name: 'page',
-            type: 'integer',
+            type: 'number',
             required: false,
             description: 'Page number (default: 1)'
           },
           {
             name: 'pageSize',
-            type: 'integer',
+            type: 'number',
             required: false,
             description: 'Number of items per page (default: 100, max: 2000)'
           }
@@ -869,7 +866,7 @@ Accept: application/json`,
   "OrderedDate": "2024-05-15T14:30:00.000Z",
 }`,
         validationRules: [
-          'DocType must be a valid DocumentType enum value',
+          'DocType must be a valid DocumentType value (Pascal case with underscores, e.g., "Title_Commitment")',
           'Name must be a valid filename with appropriate extension',
           'OrderedDate, if provided, must be a valid ISO 8601 timestamp',
           'Notes, if provided, must be a string',
@@ -1026,7 +1023,7 @@ Accept: application/json`,
     {
       "Id": "d15VH00000JklmnoOPQ",
       "Name": "Deed.pdf",
-      "DocType": "Deed",
+      "DocType": "Executed_Deed",
       "OrderedDate": "2024-05-15T14:30:00.000Z",
       "UploadedDate": "2024-05-16T10:15:30.000Z",
       "Status": "Approved",
@@ -1081,70 +1078,6 @@ Accept: application/json`,
   "Rejected": false
 }`,
         interfaceDefinition: `${documentInterfaces}\n\n// Shared interfaces\n${sharedInterfaces}`
-      },
-      {
-        title: 'List Amherst Documents',
-        method: 'GET',
-        path: '{amherst-api-base}/v1/title-data/{transaction-type}/:id/amherst-documents',
-        description: [
-          'Retrieves all Amherst-uploaded documents associated with a transaction',
-          'Returns an object with document types as keys and signed download URLs as values',
-          'Signed URLs will expire after 15 minutes',
-          'Note: Replace {transaction-type} with either "cash-acquisitions" or "retail-sales"'
-        ],
-        requestHeaders: `Authorization: Bearer {access_token}
-Accept: application/json`,
-        pathParams: [
-          {
-            name: 'transaction-type',
-            type: 'string',
-            required: true,
-            description: 'The type of transaction ("cash-acquisitions" or "retail-sales")'
-          },
-          {
-            name: 'id',
-            type: 'string',
-            required: true,
-            description: 'Transaction ID (must be exactly 18 characters in length)'
-          }
-        ],
-        responseExample: `{
-  "Title_Commitment": "https://amherst-storage.s3.amazonaws.com/documents/a13VH00000HjjopYAB/amherst-title-commitment.pdf?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIOSFODNN7EXAMPLE%2F20240515%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20240515T123456Z&X-Amz-Expires=900&X-Amz-SignedHeaders=host&X-Amz-Signature=123456789abcdef",
-  "Deed": "https://amherst-storage.s3.amazonaws.com/documents/a13VH00000HjjopYAB/amherst-deed.pdf?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIOSFODNN7EXAMPLE%2F20240515%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20240515T123456Z&X-Amz-Expires=900&X-Amz-SignedHeaders=host&X-Amz-Signature=123456789abcdef"
-}`,
-        interfaceDefinition: `export interface AmherstDocumentsResponse {
-  [key in DocumentType]?: string
-}
-
-export enum DocumentType {
-  AFFIDAVIT = 'Affidavit',
-  ASSIGNMENT_OF_LEASE = 'Assignment_Of_Lease',
-  BUYER_CLOSING_DOCS = 'Buyer_Closing_Docs',
-  CCR = 'CCR',
-  CLOSING_DISCLOSURE = 'Closing_Disclosure',
-  DEED = 'Deed',
-  ESCROW_AGREEMENT = 'Escrow_Agreement',
-  EXECUTED_DEED = 'Executed_Deed',
-  FINAL_CONTRACT_AND_AMENDMENTS = 'Final_Contract_And_Amendments',
-  FINAL_HUD = 'Final_HUD',
-  FIRPTA = 'FIRPTA',
-  HOA_CERTIFICATE = 'HOA_Certificate',
-  LEASE = 'Lease',
-  LEASEBACK = 'Leaseback',
-  MLC = 'MLC',
-  MORTGAGE = 'Mortgage',
-  NO_HOA_CONFIRMATION = 'No_HOA_Confirmation',
-  NON_FOREIGN_CERT = 'Non_Foreign_Cert',
-  PLAT_MAP = 'Plat_Map',
-  RECORDED_DEED = 'Recorded_Deed',
-  SCHEDULE_B = 'Schedule_B',
-  SETTLEMENT_STATEMENT = 'Settlement_Statement',
-  SURVEY = 'Survey',
-  TAX_CERTIFICATE = 'Tax_Certificate',
-  TITLE_COMMITMENT = 'Title_Commitment',
-  TITLE_POLICY = 'Title_Policy',
-  UNEXECUTED_DEED = 'Unexecuted_Deed'
-}`
       }
     ]
   },
@@ -1244,13 +1177,13 @@ Accept: application/json`,
         queryParams: [
           {
             name: 'page',
-            type: 'integer',
+            type: 'number',
             required: false,
             description: 'Page number (default: 1)'
           },
           {
             name: 'pageSize',
-            type: 'integer',
+            type: 'number',
             required: false,
             description: 'Number of items per page (default: 100, max: 2000)'
           }
@@ -1414,6 +1347,22 @@ export const notes = [
 
 export const versionHistory = [
   {
+    version: 'v1.4.3',
+    date: '2025-05-15',
+    author: 'David Brown',
+    environments: {
+      qa: true,
+      prod: false
+    },
+    changes: [
+      'Document Management:',
+      '- Updated DocumentType enum with new values',
+      '- Removed "List Amherst Documents" endpoint',
+      'Cash Acquisitions:',
+      '- State field in Property object now returns standardized two-letter state codes (e.g., "TX", "FL") instead of full state names'
+    ]
+  },
+  {
     version: 'v1.4.2',
     date: '2025-05-02',
     author: 'David Brown',
@@ -1533,7 +1482,7 @@ export const versionHistory = [
       '- - Added BuyerAgent field',
       '- - Added SellerAgent field',
       '- - Added ReadyToClose and ReadyToFund fields',
-      '- - Parsed address fields into Address Object and Name fields into Name Object',
+      '- - Parsed address fields into Address Object and Name fields into Name fields',
       '- New GET endpoint Get Cash Acquisition by ID to retrieve transaction by Id',
       '- New PATCH endpoint Update Cash Acquisition to update ReadyToClose and ReadyToFund',
       'Retail Sales:',
@@ -1541,7 +1490,7 @@ export const versionHistory = [
       '- - Renamed LossAmount to LoanAmount',
       '- - Added Lender field',
       '- - Added ReadyToClose and ReadyToFund fields',
-      '- - Parsed address fields into Address Object and Name fields into Name Object',
+      '- - Parsed address fields into Address Object and Name fields into Name fields',
       '- New GET endpoint Get Retail Sale by ID to retrieve transaction by Id',
       '- New PATCH endpoint Update Retail Sale to update ReadyToClose and ReadyToFund',
       'Portfolio:',
