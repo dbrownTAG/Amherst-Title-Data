@@ -144,7 +144,7 @@ export interface HOA {
 const documentInterfaces = `export interface Document {
   Id: string
   Name: string
-  DocType: DocumentType
+  DocType: AcquisitionsDocumentType | DispositionsDocumentType
   OrderedDate: string | null
   UploadedDate: string | null
   Status: string | null
@@ -153,22 +153,16 @@ const documentInterfaces = `export interface Document {
   Rejected: boolean
 }
 
-export enum DocumentType {
-  ASSIGNMENT_OF_LEASE = 'Assignment_of_Lease',
+export enum AcquisitionsDocumentType {
   BUYER_CLOSING_DOCS = 'Buyer_Closing_Docs',
-  CCR = 'CCR',
-  COMPILED_MORTGAGES = 'Compiled_Mortgages',
-  COMPILED_RELEASES = 'Compiled_Releases',
-  COMMISSION_INSTRUCTIONS = 'Commission_Instructions',
-  CONFIRMATION_OF_NO_HOA = 'Confirmation_of_no_HOA',
+  EMD_RECEIPT = 'EMD_Receipt',
   EXECUTED_DEED = 'Executed_Deed',
   FINAL_CONTRACT_AND_AMENDMENTS = 'Final_Contract_and_Amendments',
   FINAL_HUD = 'Final_HUD',
   FIRPTA = 'FIRPTA',
-  HOA_CERT = 'HOA_Cert',
+  HOA_CONFIRMATION = 'HOA_Confirmation',
   MLC = 'MLC',
   NON_FOREIGN_CERT = 'Non_Foreign_Cert',
-  PAYOFF = 'Payoff',
   PLAT_MAP = 'Plat_Map',
   RECORDED_DEED = 'Recorded_Deed',
   SCHEDULE_B = 'Schedule_B',
@@ -176,6 +170,19 @@ export enum DocumentType {
   TITLE_COMMITMENT = 'Title_Commitment',
   TITLE_POLICY = 'Title_Policy',
   UNEXECUTED_DEED = 'Unexecuted_Deed',
+}
+
+export enum DispositionsDocumentType {
+  COMPILED_MORTGAGES = 'Compiled_Mortgages',
+  COMPILED_RELEASES = 'Compiled_Releases',
+  EMD_RECEIPT = 'EMD_Receipt',
+  FINAL_HUD = 'Final_HUD',
+  MLC = 'MLC',
+  PAYOFF = 'Payoff',
+  SELLER_EDOCS = 'Seller_Edocs',
+  SELLER_HUD = 'Seller_HUD',
+  SELLER_WET_DOCS = 'Seller_Wet_Docs',
+  TITLE_COMMITMENT = 'Title_Commitment',
   WIRE_CONFIRMATION = 'Wire_Confirmation',
 }`;
 
@@ -530,6 +537,7 @@ Accept: application/json`,
   {
     id: 'retail-sales',
     title: 'Retail Sales',
+    description: 'Note: As of v1.4.4, document types are separated into AcquisitionsDocumentType and DispositionsDocumentType.',
     responseObject: `{
   "Id": "a204u000003NnmcAAC", // string - 18 character ID
   "AlternatePropertyId": "p2061794", // string
@@ -831,7 +839,7 @@ Accept: application/json`,
   {
     id: 'document-management',
     title: 'Document Management',
-    description: 'The following endpoints allow for document management associated with both cash acquisition and retail sale transactions. Document operations are restricted to title companies specified in the allowedCompanies list in the token metadata.',
+    description: 'The following endpoints allow for document management associated with both cash acquisition and retail sale transactions. Document operations are restricted to title companies specified in the allowedCompanies list in the token metadata. As of v1.4.4, document types are separated into AcquisitionsDocumentType for cash acquisitions and DispositionsDocumentType for retail sales.',
     endpoints: [
       {
         title: 'Create Document',
@@ -866,7 +874,7 @@ Accept: application/json`,
   "OrderedDate": "2024-05-15T14:30:00.000Z",
 }`,
         validationRules: [
-          'DocType must be a valid DocumentType value (Pascal case with underscores, e.g., "Title_Commitment")',
+          'DocType must be a valid DocumentType value (Pascal case with underscores, e.g., "Title_Commitment"). For Acquisitions, use AcquisitionsDocumentType. For Dispositions, use DispositionsDocumentType.',
           'Name must be a valid filename with appropriate extension',
           'OrderedDate, if provided, must be a valid ISO 8601 timestamp',
           'Notes, if provided, must be a string',
@@ -1343,9 +1351,24 @@ export const notes = [
   'Document uploads must be performed using the signed URL provided by the upload-url endpoint',
   'Uploaded documents are only accessible to authorized title companies specified in the token',
   'Signed URLs for document uploads expire after 15 minutes',
+  'For document operations, use AcquisitionsDocumentType values for cash-acquisitions and DispositionsDocumentType values for retail-sales',
 ];
 
 export const versionHistory = [
+  {
+    version: 'v1.4.4',
+    date: '2025-05-20',
+    author: 'David Brown',
+    environments: {
+      qa: false,
+      prod: false
+    },
+    changes: [
+      'Document Management:',
+      '- Split DocumentType enum into separate AcquisitionsDocumentType and DispositionsDocumentType enums',
+      '- Updated validation rules to reference the appropriate document type enum based on transaction type'
+    ]
+  },
   {
     version: 'v1.4.3',
     date: '2025-05-15',
