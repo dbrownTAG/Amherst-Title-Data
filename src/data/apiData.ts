@@ -69,7 +69,7 @@ export interface DispositionTitleData {
   BuyerName: ContactName | null
   ClosingDate: string
   ClosedAndFunded: boolean
-  EarnestMoney: number
+  EarnestMoney: string
   Id: string
   LastModifiedDateTime: string
   Lender: string
@@ -87,7 +87,8 @@ export interface DispositionTitleData {
 
 export enum DispositionTitleDataStatus {
   Open = 'Open',
-  Cancelled = 'Cancelled',  
+  Cancelled = 'Cancelled',
+  Closed = 'Closed',
 }`;
 
 const portfolioInterface = `import { Address, HOA } from './shared.interface'
@@ -155,6 +156,7 @@ const documentInterfaces = `export interface Document {
 
 export enum AcquisitionsDocumentType {
   BUYER_CLOSING_DOCS = 'Buyer_Closing_Docs',
+  CCR = 'CCR',
   EMD_RECEIPT = 'EMD_Receipt',
   EXECUTED_DEED = 'Executed_Deed',
   FINAL_CONTRACT_AND_AMENDMENTS = 'Final_Contract_and_Amendments',
@@ -163,6 +165,7 @@ export enum AcquisitionsDocumentType {
   HOA_CONFIRMATION = 'HOA_Confirmation',
   MLC = 'MLC',
   NON_FOREIGN_CERT = 'Non_Foreign_Cert',
+  OTHER = 'Other',
   PLAT_MAP = 'Plat_Map',
   RECORDED_DEED = 'Recorded_Deed',
   SCHEDULE_B = 'Schedule_B',
@@ -173,17 +176,27 @@ export enum AcquisitionsDocumentType {
 }
 
 export enum DispositionsDocumentType {
-  COMPILED_MORTGAGES = 'Compiled_Mortgages',
-  COMPILED_RELEASES = 'Compiled_Releases',
   EMD_RECEIPT = 'EMD_Receipt',
   FINAL_HUD = 'Final_HUD',
   MLC = 'MLC',
+  OTHER = 'Other',
   PAYOFF = 'Payoff',
   SELLER_EDOCS = 'Seller_Edocs',
   SELLER_HUD = 'Seller_HUD',
   SELLER_WET_DOCS = 'Seller_Wet_Docs',
   TITLE_COMMITMENT = 'Title_Commitment',
   WIRE_CONFIRMATION = 'Wire_Confirmation',
+}
+
+export enum AmherstDocumentType {
+  AMENDMENTS_TO_CONTRACT = 'Amendments_to_Contract',
+  ASSIGNMENT_OF_LEASE = 'Assignment_of_Lease',
+  COMMISSION_INSTRUCTIONS = 'Commission_Instructions',
+  EXECUTED_CLOSING_PACKAGE = 'Executed_Closing_Package',
+  FIRPTA = 'FIRPTA',
+  LEASE = 'Lease',
+  LEASE_BACK = 'Leaseback',
+  PURCHASE_CONTRACT = 'Purchase_Contract',
 }`;
 
 export const apiData: ApiSection[] = [
@@ -457,6 +470,8 @@ Accept: application/json`,
         description: [
           'Updates ClosedAndFunded status for a cash acquisition transaction',
           'Note: ReadyToClose and ReadyToFund must be true before ClosedAndFunded can be set to true',
+          'ClosedAndFunded can only be set to true once - already closed transactions cannot be updated',
+          'Only transactions with status "Open" can be updated',
           'Returns updated transaction details',
           'Note: Only accepts IDs that are exactly 18 characters in length'
         ],
@@ -476,7 +491,9 @@ Accept: application/json`,
 }`,
         validationRules: [
           'ClosedAndFunded must be a boolean value',
-          'ReadyToClose and ReadyToFund must be true before ClosedAndFunded can be set to true'
+          'ReadyToClose and ReadyToFund must be true before ClosedAndFunded can be set to true',
+          'ClosedAndFunded can only be set to true once - transactions that are already closed and funded cannot be updated',
+          'Only transactions with status "Open" can be updated'
         ],
         responseExample: `{
   "Id": "a13VH00000HjjopYAB",
@@ -553,7 +570,7 @@ Accept: application/json`,
   },
   "ClosingDate": "2018-11-28", // string - ISO 8601 date format
   "ClosedAndFunded": false, // boolean
-  "EarnestMoney": 3000, // number
+  "EarnestMoney": "3000", // string
   "LastModifiedDateTime": "2024-12-20T21:49:00.000+0000", // string - ISO 8601 datetime format
   "Lender": "First National Bank", // string
   "LoanAmount": 240000, // number
@@ -576,7 +593,7 @@ Accept: application/json`,
   },
   "SellerAgent": "Hunter Fendley (TX)", // string
   "SellerName": "Mesa Verde Assets, LLC", // string
-  "Status": "Open", // DispositionTitleDataStatus enum: 'Open' | 'Cancelled'
+  "Status": "Open", // DispositionTitleDataStatus enum: 'Open' | 'Cancelled' | 'Closed'
   "TentativeDate": "" // string - ISO 8601 date format
 }
 
@@ -590,7 +607,7 @@ export interface DispositionTitleData {
   BuyerName: ContactName | null
   ClosingDate: string
   ClosedAndFunded: boolean
-  EarnestMoney: number
+  EarnestMoney: string
   Id: string
   LastModifiedDateTime: string
   Lender: string
@@ -608,7 +625,8 @@ export interface DispositionTitleData {
 
 export enum DispositionTitleDataStatus {
   Open = 'Open',
-  Cancelled = 'Cancelled',  
+  Cancelled = 'Cancelled',
+  Closed = 'Closed',
 }
 \`\`\`
 `,
@@ -655,7 +673,7 @@ Accept: application/json`,
       },
       "ClosingDate": "2018-11-28",
       "ClosedAndFunded": false,
-      "EarnestMoney": 3000,
+      "EarnestMoney": "3000",
       "LastModifiedDateTime": "2024-12-20T21:49:00.000+0000",
       "Lender": "First National Bank",
       "LoanAmount": 240000,
@@ -735,7 +753,7 @@ Accept: application/json`,
   },
   "ClosingDate": "2018-11-28",
   "ClosedAndFunded": false,
-  "EarnestMoney": 3000,
+  "EarnestMoney": "3000",
   "LastModifiedDateTime": "2024-12-20T21:49:00.000+0000",
   "Lender": "First National Bank",
   "LoanAmount": 240000,
@@ -770,6 +788,8 @@ Accept: application/json`,
         description: [
           'Updates ClosedAndFunded status for a retail sale transaction',
           'Note: ReadyToClose and ReadyToFund must be true before ClosedAndFunded can be set to true',
+          'ClosedAndFunded can only be set to true once - already closed transactions cannot be updated',
+          'Only transactions with status "Open" can be updated',
           'Returns updated transaction details',
           'Note: Only accepts IDs that are exactly 18 characters in length'
         ],
@@ -789,7 +809,9 @@ Accept: application/json`,
 }`,
         validationRules: [
           'ClosedAndFunded must be a boolean value',
-          'ReadyToClose and ReadyToFund must be true before ClosedAndFunded can be set to true'
+          'ReadyToClose and ReadyToFund must be true before ClosedAndFunded can be set to true',
+          'ClosedAndFunded can only be set to true once - transactions that are already closed and funded cannot be updated',
+          'Only transactions with status "Open" can be updated'
         ],
         responseExample: `{
   "Id": "a204u000003NnmcAAC",
@@ -806,7 +828,7 @@ Accept: application/json`,
   },
   "ClosingDate": "2018-11-28",
   "ClosedAndFunded": true,
-  "EarnestMoney": 3000,
+  "EarnestMoney": "3000",
   "LastModifiedDateTime": "2024-12-20T21:49:00.000+0000",
   "Lender": "First National Bank",
   "LoanAmount": 240000,
@@ -877,6 +899,7 @@ Accept: application/json`,
           'DocType must be a valid DocumentType value (Pascal case with underscores, e.g., "Title_Commitment"). For Acquisitions, use AcquisitionsDocumentType. For Dispositions, use DispositionsDocumentType.',
           'Name must be a valid filename with appropriate extension',
           'OrderedDate, if provided, must be a valid ISO 8601 timestamp',
+          'Notes is required when DocType is "Other"',
           'Notes, if provided, must be a string',
           'Title company must be authorized for the specified transaction'
         ],
@@ -1086,6 +1109,68 @@ Accept: application/json`,
   "Rejected": false
 }`,
         interfaceDefinition: `${documentInterfaces}\n\n// Shared interfaces\n${sharedInterfaces}`
+      },
+      {
+        title: 'Get Amherst Documents',
+        method: 'GET',
+        path: '{amherst-api-base}/v1/title-data/{transaction-type}/:id/amherst-documents',
+        description: [
+          'Retrieves all Amherst-uploaded documents associated with a transaction',
+          'Returns documents with signed URLs for direct download',
+          'Only returns documents of AmherstDocumentType that have been uploaded',
+          'Signed URLs expire after 15 minutes',
+          'Note: Replace {transaction-type} with either "cash-acquisitions" or "retail-sales"'
+        ],
+        requestHeaders: `Authorization: Bearer {access_token}
+Accept: application/json`,
+        pathParams: [
+          {
+            name: 'transaction-type',
+            type: 'string',
+            required: true,
+            description: 'The type of transaction ("cash-acquisitions" or "retail-sales")'
+          },
+          {
+            name: 'id',
+            type: 'string',
+            required: true,
+            description: 'Transaction ID (must be exactly 18 characters in length)'
+          }
+        ],
+        responseExample: `{
+  "data": [
+    {
+      "DocType": "Assignment_of_Lease",
+      "Id": "a3fVG00000DJtR8YAL",
+      "Name": "10829850-206_SANDY_HILL_RD-Assignment_of_Lease.pdf",
+      "Notes": null,
+      "UploadedDate": "2025-05-27T18:14:30.000+0000",
+      "SignedURL": "https://cfsigned-dev.amhev.com/sfid/500VG00000IH1a7YAD/10829850-206_SANDY_HILL_RD-Assignment_of_Lease.pdf?Expires=1748373911&Key-Pair-Id=APKAJP3C5KCRFH3YRQQQ&Signature=DaE~RanseEuz-e3783I2CzQV1nwcH2khvy-TzIngaYAdy86ejHvsZ6GryAxYwAyQBiMOl5oxT8miAj~99Cb10f8k5WfB5ekdu4EEiQFSNXXDClF3VIWqqfJCeAn92IqxgvQNv8VU88UEkg7gLqYziYyKn~UuZA0ats5Z7lWyAYLoe4usyNd4aR-a3bcT1cEGbewzp-l2mSlFQXQC~zMAReMU2ZDBC-YOTPscARqwlR1lHzA7eeTq7Bi2AiCosTNMICu-11omSRsmAQg2eSzGH4h1SiQGoTjZkXV0FVskmJjh9FvxG7EF52-XaK4AaB4WhXo2e0CdRIBYYCtGXBSAzg__"
+    },
+    {
+      "DocType": "Amendments_to_Contract",
+      "Id": "a3fVG00000DJqwHYAT",
+      "Name": "10829850-206_SANDY_HILL_RD-Amendments_to_Contract.pdf",
+      "Notes": null,
+      "UploadedDate": "2025-05-27T15:54:32.000+0000",
+      "SignedURL": "https://cfsigned-dev.amhev.com/sfid/500VG00000IH1a7YAD/10829850-206_SANDY_HILL_RD-Amendments_to_Contract.pdf?Expires=1748373911&Key-Pair-Id=APKAJP3C5KCRFH3YRQQQ&Signature=Vc0KWyoZ6pSdE0E93~ibDt6iofEqYEi~ObVab2HaOQ7WxMtkSeqPMQrpsL4WTF~l9wZXPwVKoXV2~MCqRJCJBK3cw3DOc6quW5ekn0Uw086~2nO7jKWx4e5L3NDSM5Y8jr77Ban6oX9eUtKgZ4w8VCXjaA-5F0GRuy2NG4~jZ6aCcihCPPoWWPeprVkV5U9JesvlT9FHNWx4TMHhKELN6OBC355QjLHeJUHXGNV-lMsVJBg5LRTh1xNPSDM9lUZtFL8OtiiHkOuF9bbsddY-hvc8LyOhBtjJEtue2kmwTReLjjxRazaH8swVzKp4F9C9cGpvCNSIRoNe9xr0P9WUGA__"
+    }
+  ]
+}`,
+        interfaceDefinition: `export interface AmherstDocumentDto {
+  DocType: string
+  Id: string
+  Name: string
+  Notes: string | null
+  UploadedDate: string | null
+  SignedURL: string
+}
+
+export interface AmherstDocumentListResponseDto {
+  data: AmherstDocumentDto[]
+}
+
+${documentInterfaces}\n\n// Shared interfaces\n${sharedInterfaces}`
       }
     ]
   },
@@ -1348,10 +1433,13 @@ export const notes = [
   'All GET by ID endpoints only accept IDs that are exactly 18 characters in length',
   'Your access token determines which data you can access - you will only see data for entities you are authorized to view',
   'The ClosedAndFunded field can only be set to true if ReadyToClose and ReadyToFund are already true',
+  'ClosedAndFunded can only be set to true once - transactions that are already closed and funded cannot be updated again',
+  'Only transactions with status "Open" can be updated',
   'Document uploads must be performed using the signed URL provided by the upload-url endpoint',
   'Uploaded documents are only accessible to authorized title companies specified in the token',
   'Signed URLs for document uploads expire after 15 minutes',
   'For document operations, use AcquisitionsDocumentType values for cash-acquisitions and DispositionsDocumentType values for retail-sales',
+  'When creating a document with DocType "Other", the Notes field is required to specify what type of document it is',
 ];
 
 export const versionHistory = [
@@ -1360,12 +1448,20 @@ export const versionHistory = [
     date: '2025-05-20',
     author: 'David Brown',
     environments: {
-      qa: false,
+      qa: true,
       prod: false
     },
     changes: [
       'Document Management:',
       '- Split DocumentType enum into separate AcquisitionsDocumentType and DispositionsDocumentType enums',
+      '- Added CCR and OTHER document types to AcquisitionsDocumentType',
+      '- Added OTHER document type to DispositionsDocumentType',
+      '- Removed COMPILED_MORTGAGES and COMPILED_RELEASES from DispositionsDocumentType',
+      '- Added AmherstDocumentType enum for Amherst-uploaded documents',
+      '- Added new GET /:id/amherst-documents endpoint to retrieve Amherst-uploaded documents with signed URLs',
+      'Retail Sales:',
+      '- Updated EarnestMoney field type from number to string',
+      '- Added Closed status to DispositionTitleDataStatus enum',
       '- Updated validation rules to reference the appropriate document type enum based on transaction type'
     ]
   },
