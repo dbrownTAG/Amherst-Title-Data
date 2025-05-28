@@ -1140,28 +1140,37 @@ Accept: application/json`,
         responseExample: `{
   "data": [
     {
+      "Approved": true,
       "DocType": "Assignment_of_Lease",
       "Id": "a3fVG00000DJtR8YAL",
       "Name": "10829850-206_SANDY_HILL_RD-Assignment_of_Lease.pdf",
       "Notes": null,
+      "Rejected": false,
+      "Status": "Approved",
       "UploadedDate": "2025-05-27T18:14:30.000+0000",
       "SignedURL": "https://cfsigned-dev.amhev.com/sfid/500VG00000IH1a7YAD/10829850-206_SANDY_HILL_RD-Assignment_of_Lease.pdf?Expires=1748373911&Key-Pair-Id=APKAJP3C5KCRFH3YRQQQ&Signature=DaE~RanseEuz-e3783I2CzQV1nwcH2khvy-TzIngaYAdy86ejHvsZ6GryAxYwAyQBiMOl5oxT8miAj~99Cb10f8k5WfB5ekdu4EEiQFSNXXDClF3VIWqqfJCeAn92IqxgvQNv8VU88UEkg7gLqYziYyKn~UuZA0ats5Z7lWyAYLoe4usyNd4aR-a3bcT1cEGbewzp-l2mSlFQXQC~zMAReMU2ZDBC-YOTPscARqwlR1lHzA7eeTq7Bi2AiCosTNMICu-11omSRsmAQg2eSzGH4h1SiQGoTjZkXV0FVskmJjh9FvxG7EF52-XaK4AaB4WhXo2e0CdRIBYYCtGXBSAzg__"
     },
     {
+      "Approved": null,
       "DocType": "Amendments_to_Contract",
       "Id": "a3fVG00000DJqwHYAT",
       "Name": "10829850-206_SANDY_HILL_RD-Amendments_to_Contract.pdf",
       "Notes": null,
+      "Rejected": null,
+      "Status": "Under Review",
       "UploadedDate": "2025-05-27T15:54:32.000+0000",
       "SignedURL": "https://cfsigned-dev.amhev.com/sfid/500VG00000IH1a7YAD/10829850-206_SANDY_HILL_RD-Amendments_to_Contract.pdf?Expires=1748373911&Key-Pair-Id=APKAJP3C5KCRFH3YRQQQ&Signature=Vc0KWyoZ6pSdE0E93~ibDt6iofEqYEi~ObVab2HaOQ7WxMtkSeqPMQrpsL4WTF~l9wZXPwVKoXV2~MCqRJCJBK3cw3DOc6quW5ekn0Uw086~2nO7jKWx4e5L3NDSM5Y8jr77Ban6oX9eUtKgZ4w8VCXjaA-5F0GRuy2NG4~jZ6aCcihCPPoWWPeprVkV5U9JesvlT9FHNWx4TMHhKELN6OBC355QjLHeJUHXGNV-lMsVJBg5LRTh1xNPSDM9lUZtFL8OtiiHkOuF9bbsddY-hvc8LyOhBtjJEtue2kmwTReLjjxRazaH8swVzKp4F9C9cGpvCNSIRoNe9xr0P9WUGA__"
     }
   ]
 }`,
         interfaceDefinition: `export interface AmherstDocumentDto {
+  Approved: boolean | null
   DocType: string
   Id: string
   Name: string
   Notes: string | null
+  Rejected: boolean | null
+  Status: string | null
   UploadedDate: string | null
   SignedURL: string
 }
