@@ -155,13 +155,14 @@ const documentInterfaces = `export interface Document {
 }
 
 export enum AcquisitionsDocumentType {
-  BUYER_CLOSING_DOCS = 'Buyer_Closing_Docs',
+  BUYER_SIGNING_DOCS = 'Buyer_Signing_Docs',
   CCR = 'CCR',
   EMD_RECEIPT = 'EMD_Receipt',
   EXECUTED_DEED = 'Executed_Deed',
   FINAL_CONTRACT_AND_AMENDMENTS = 'Final_Contract_and_Amendments',
   FINAL_HUD = 'Final_HUD',
   FIRPTA = 'FIRPTA',
+  HOA_CERT = 'HOA_Cert',
   HOA_CONFIRMATION = 'HOA_Confirmation',
   MLC = 'MLC',
   NON_FOREIGN_CERT = 'Non_Foreign_Cert',
@@ -176,8 +177,11 @@ export enum AcquisitionsDocumentType {
 }
 
 export enum DispositionsDocumentType {
+  COMPILED_RELEASES = 'Compiled_Releases',
+  COMPILED_MORTGAGES = 'Compiled_Mortgages',
   EMD_RECEIPT = 'EMD_Receipt',
   FINAL_HUD = 'Final_HUD',
+  HOA_CERT = 'HOA_Cert',
   MLC = 'MLC',
   OTHER = 'Other',
   PAYOFF = 'Payoff',
@@ -194,6 +198,7 @@ export enum AmherstDocumentType {
   COMMISSION_INSTRUCTIONS = 'Commission_Instructions',
   EXECUTED_CLOSING_PACKAGE = 'Executed_Closing_Package',
   FIRPTA = 'FIRPTA',
+  INVOICE = 'Invoice',
   LEASE = 'Lease',
   LEASE_BACK = 'Leaseback',
   PURCHASE_CONTRACT = 'Purchase_Contract',
@@ -1452,6 +1457,24 @@ export const notes = [
 ];
 
 export const versionHistory = [
+  {
+    version: 'v1.4.5',
+    date: '2025-05-21',
+    author: 'David Brown',
+    environments: {
+      qa: true,
+      prod: false
+    },
+    changes: [
+      'Document Management:',
+      '- Updated BUYER_CLOSING_DOCS to BUYER_SIGNING_DOCS in AcquisitionsDocumentType enum',
+      '- Added HOA_CERT document type to AcquisitionsDocumentType enum',
+      '- Added COMPILED_RELEASES and COMPILED_MORTGAGES document types back to DispositionsDocumentType enum',
+      '- Added HOA_CERT document type to DispositionsDocumentType enum',
+      '- Added INVOICE document type to AmherstDocumentType enum',
+      '- Updated document type enums to match backend interface definitions'
+    ]
+  },
   {
     version: 'v1.4.4',
     date: '2025-05-20',
