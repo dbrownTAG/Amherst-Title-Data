@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/Amherst-Title-Data/static/css/main.b23fe6af.css",
-    "main.js": "/Amherst-Title-Data/static/js/main.c66f463d.js",
+    "main.js": "/Amherst-Title-Data/static/js/main.e34549c2.js",
     "static/js/453.647294a7.chunk.js": "/Amherst-Title-Data/static/js/453.647294a7.chunk.js",
     "index.html": "/Amherst-Title-Data/index.html",
     "main.b23fe6af.css.map": "/Amherst-Title-Data/static/css/main.b23fe6af.css.map",
-    "main.c66f463d.js.map": "/Amherst-Title-Data/static/js/main.c66f463d.js.map",
+    "main.e34549c2.js.map": "/Amherst-Title-Data/static/js/main.e34549c2.js.map",
     "453.647294a7.chunk.js.map": "/Amherst-Title-Data/static/js/453.647294a7.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.b23fe6af.css",
-    "static/js/main.c66f463d.js"
+    "static/js/main.e34549c2.js"
   ]
 }
