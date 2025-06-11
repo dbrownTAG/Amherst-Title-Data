@@ -164,6 +164,7 @@ export enum AcquisitionsDocumentType {
   FIRPTA = 'FIRPTA',
   HOA_CERT = 'HOA_Cert',
   HOA_CONFIRMATION = 'HOA_Confirmation',
+  CONFIRMATION_OF_NO_HOA = 'Confirmation_of_no_HOA',
   MLC = 'MLC',
   NON_FOREIGN_CERT = 'Non_Foreign_Cert',
   OTHER = 'Other',
@@ -1472,6 +1473,7 @@ export const versionHistory = [
       '- Added COMPILED_RELEASES and COMPILED_MORTGAGES document types back to DispositionsDocumentType enum',
       '- Added HOA_CERT document type to DispositionsDocumentType enum',
       '- Added INVOICE document type to AmherstDocumentType enum',
+      '- Added CONFIRMATION_OF_NO_HOA document type to AcquisitionsDocumentType enum',
       '- Updated document type enums to match backend interface definitions'
     ]
   },
