@@ -307,16 +307,149 @@ const updateValidationRules = (rules: string[], documentType: string): string[] 
 };
 
 const getContextualizedInterface = (contextId: string): string => {
-  const documentInterfaces = `export interface Document {
+  const documentInterfaces = `export enum AcquisitionsDocumentType {
+  BUYER_SIGNING_DOCS = 'Buyer_Signing_Docs',
+  CCR = 'CCR',
+  EMD_RECEIPT = 'EMD_Receipt',
+  EXECUTED_DEED = 'Executed_Deed',
+  FINAL_CONTRACT_AND_AMENDMENTS = 'Final_Contract_and_Amendments',
+  FINAL_HUD = 'Final_HUD',
+  FIRPTA = 'FIRPTA',
+  HOA_CERT = 'HOA_Cert',
+  HOA_CONFIRMATION = 'HOA_Confirmation',
+  CONFIRMATION_OF_NO_HOA = 'Confirmation_of_no_HOA',
+  MLC = 'MLC',
+  NON_FOREIGN_CERT = 'Non_Foreign_Cert',
+  OTHER = 'Other',
+  PLAT_MAP = 'Plat_Map',
+  RECORDED_DEED = 'Recorded_Deed',
+  SCHEDULE_B = 'Schedule_B',
+  TAX_CERT = 'Tax_Cert',
+  TITLE_COMMITMENT = 'Title_Commitment',
+  TITLE_POLICY = 'Title_Policy',
+  UNEXECUTED_DEED = 'Unexecuted_Deed',
+}
+
+export enum DispositionsDocumentType {
+  COMPILED_RELEASES = 'Compiled_Releases',
+  COMPILED_MORTGAGES = 'Compiled_Mortgages',
+  EMD_RECEIPT = 'EMD_Receipt',
+  FINAL_HUD = 'Final_HUD',
+  HOA_CERT = 'HOA_Cert',
+  MLC = 'MLC',
+  OTHER = 'Other',
+  PAYOFF = 'Payoff',
+  SELLER_EDOCS = 'Seller_Edocs',
+  SELLER_HUD = 'Seller_HUD',
+  SELLER_WET_DOCS = 'Seller_Wet_Docs',
+  TITLE_COMMITMENT = 'Title_Commitment',
+  WIRE_CONFIRMATION = 'Wire_Confirmation',
+}
+
+export enum AmherstDocumentType {
+  AMENDMENTS_TO_CONTRACT = 'Amendments_to_Contract',
+  ASSIGNMENT_OF_LEASE = 'Assignment_of_Lease',
+  COMMISSION_INSTRUCTIONS = 'Commission_Instructions',
+  EXECUTED_CLOSING_PACKAGE = 'Executed_Closing_Package',
+  FIRPTA = 'FIRPTA',
+  INVOICE = 'Invoice',
+  LEASE = 'Lease',
+  LEASE_BACK = 'Leaseback',
+  PURCHASE_CONTRACT = 'Purchase_Contract',
+}
+
+export enum FinancingDocumentType {
+  BUYER_SIGNING_DOCS = 'Buyer_Signing_Docs',
+  CCR = 'CCR',
+  COMPILED_MORTGAGES = 'Compiled_Mortgages',
+  COMPILED_RELEASES = 'Compiled_Releases',
+  CONFIRMATION_OF_NO_HOA = 'Confirmation_of_no_HOA',
+  EMD_RECEIPT = 'EMD_Receipt',
+  EXECUTED_DEED = 'Executed_Deed',
+  FINAL_CONTRACT_AND_AMENDMENTS = 'Final_Contract_and_Amendments',
+  FINAL_HUD = 'Final_HUD',
+  FIRPTA = 'FIRPTA',
+  HOA_CERT = 'HOA_Cert',
+  HOA_CONFIRMATION = 'HOA_Confirmation',
+  MLC = 'MLC',
+  NON_FOREIGN_CERT = 'Non_Foreign_Cert',
+  OTHER = 'Other',
+  PAYOFF = 'Payoff',
+  PLAT_MAP = 'Plat_Map',
+  RECORDED_DEED = 'Recorded_Deed',
+  SCHEDULE_B = 'Schedule_B',
+  SELLER_EDOCS = 'Seller_Edocs',
+  SELLER_HUD = 'Seller_HUD',
+  SELLER_WET_DOCS = 'Seller_Wet_Docs',
+  TAX_CERT = 'Tax_Cert',
+  TITLE_COMMITMENT = 'Title_Commitment',
+  TITLE_POLICY = 'Title_Policy',
+  UNEXECUTED_DEED = 'Unexecuted_Deed',
+  WIRE_CONFIRMATION = 'Wire_Confirmation',
+}
+
+export type DocumentType = AcquisitionsDocumentType | DispositionsDocumentType | FinancingDocumentType
+
+export interface CreateDocumentDto {
+  DocType: DocumentType
+  Name?: string
+  OrderedDate?: string // ISO 8601 date format
+  Notes?: string // Required when DocType is 'Other'
+}
+
+export interface DealDocumentDto extends CreateDocumentDto {
+  DocType: AcquisitionsDocumentType
+}
+
+export interface TransactionDocumentDto extends CreateDocumentDto {
+  DocType: DispositionsDocumentType
+}
+
+export interface FinancingDocumentDto extends CreateDocumentDto {
+  DocType: FinancingDocumentType
+}
+
+export interface UpdateDocumentDto {
+  Name?: string
+  Notes?: string
+  ConfirmUpload?: boolean
+  OrderedDate?: string // ISO 8601 date format
+}
+
+export interface DocumentResponseDto {
+  Approved: boolean | null
+  DocType: DocumentType
   Id: string
   Name: string
-  DocType: AcquisitionsDocumentType | DispositionsDocumentType | FinancingDocumentType
-  OrderedDate: string | null
-  UploadedDate: string | null
-  Status: string | null
   Notes: string | null
-  Approved: boolean
-  Rejected: boolean
+  OrderedDate: string | null
+  Rejected: boolean | null
+  Status: string | null
+  UploadedDate: string | null
+}
+
+export interface DocumentListResponseDto {
+  data: DocumentResponseDto[]
+}
+
+export interface UploadUrlResponseDto {
+  SignedURL: string
+}
+
+export interface AmherstDocumentDto {
+  Approved: boolean | null
+  DocType: string
+  Id: string
+  Name: string
+  Notes: string | null
+  Rejected: boolean | null
+  Status: string | null
+  UploadedDate: string | null
+  SignedURL: string
+}
+
+export interface AmherstDocumentListResponseDto {
+  data: AmherstDocumentDto[]
 }`;
 
   const sharedInterfaces = `export interface Address {

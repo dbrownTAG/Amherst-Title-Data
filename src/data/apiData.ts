@@ -200,19 +200,7 @@ export interface HOA {
 
 // Document interfaces
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-const documentInterfaces = `export interface Document {
-  Id: string
-  Name: string
-  DocType: AcquisitionsDocumentType | DispositionsDocumentType | FinancingDocumentType
-  OrderedDate: string | null
-  UploadedDate: string | null
-  Status: string | null
-  Notes: string | null
-  Approved: boolean
-  Rejected: boolean
-}
-
-export enum AcquisitionsDocumentType {
+const documentInterfaces = `export enum AcquisitionsDocumentType {
   BUYER_SIGNING_DOCS = 'Buyer_Signing_Docs',
   CCR = 'CCR',
   EMD_RECEIPT = 'EMD_Receipt',
@@ -251,6 +239,18 @@ export enum DispositionsDocumentType {
   WIRE_CONFIRMATION = 'Wire_Confirmation',
 }
 
+export enum AmherstDocumentType {
+  AMENDMENTS_TO_CONTRACT = 'Amendments_to_Contract',
+  ASSIGNMENT_OF_LEASE = 'Assignment_of_Lease',
+  COMMISSION_INSTRUCTIONS = 'Commission_Instructions',
+  EXECUTED_CLOSING_PACKAGE = 'Executed_Closing_Package',
+  FIRPTA = 'FIRPTA',
+  INVOICE = 'Invoice',
+  LEASE = 'Lease',
+  LEASE_BACK = 'Leaseback',
+  PURCHASE_CONTRACT = 'Purchase_Contract',
+}
+
 export enum FinancingDocumentType {
   BUYER_SIGNING_DOCS = 'Buyer_Signing_Docs',
   CCR = 'CCR',
@@ -281,16 +281,68 @@ export enum FinancingDocumentType {
   WIRE_CONFIRMATION = 'Wire_Confirmation',
 }
 
-export enum AmherstDocumentType {
-  AMENDMENTS_TO_CONTRACT = 'Amendments_to_Contract',
-  ASSIGNMENT_OF_LEASE = 'Assignment_of_Lease',
-  COMMISSION_INSTRUCTIONS = 'Commission_Instructions',
-  EXECUTED_CLOSING_PACKAGE = 'Executed_Closing_Package',
-  FIRPTA = 'FIRPTA',
-  INVOICE = 'Invoice',
-  LEASE = 'Lease',
-  LEASE_BACK = 'Leaseback',
-  PURCHASE_CONTRACT = 'Purchase_Contract',
+export type DocumentType = AcquisitionsDocumentType | DispositionsDocumentType | FinancingDocumentType
+
+export interface CreateDocumentDto {
+  DocType: DocumentType
+  Name?: string
+  OrderedDate?: string // ISO 8601 date format
+  Notes?: string // Required when DocType is 'Other'
+}
+
+export interface DealDocumentDto extends CreateDocumentDto {
+  DocType: AcquisitionsDocumentType
+}
+
+export interface TransactionDocumentDto extends CreateDocumentDto {
+  DocType: DispositionsDocumentType
+}
+
+export interface FinancingDocumentDto extends CreateDocumentDto {
+  DocType: FinancingDocumentType
+}
+
+export interface UpdateDocumentDto {
+  Name?: string
+  Notes?: string
+  ConfirmUpload?: boolean
+  OrderedDate?: string // ISO 8601 date format
+}
+
+export interface DocumentResponseDto {
+  Approved: boolean | null
+  DocType: DocumentType
+  Id: string
+  Name: string
+  Notes: string | null
+  OrderedDate: string | null
+  Rejected: boolean | null
+  Status: string | null
+  UploadedDate: string | null
+}
+
+export interface DocumentListResponseDto {
+  data: DocumentResponseDto[]
+}
+
+export interface UploadUrlResponseDto {
+  SignedURL: string
+}
+
+export interface AmherstDocumentDto {
+  Approved: boolean | null
+  DocType: string
+  Id: string
+  Name: string
+  Notes: string | null
+  Rejected: boolean | null
+  Status: string | null
+  UploadedDate: string | null
+  SignedURL: string
+}
+
+export interface AmherstDocumentListResponseDto {
+  data: AmherstDocumentDto[]
 }`;
 
 export const apiData: ApiSection[] = [
@@ -1364,7 +1416,7 @@ export const versionHistory = [
     date: '2025-07-02',
     author: 'David Brown',
     environments: {
-      qa: true,
+      qa: false,
       prod: false
     },
     changes: [
