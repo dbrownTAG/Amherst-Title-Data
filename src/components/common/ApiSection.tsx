@@ -3,6 +3,7 @@ import { Typography, Paper, Box } from '@mui/material';
 import { useParams } from 'react-router-dom';
 import { apiData, ApiEndpoint } from '../../data/apiData';
 import EndpointDetails from '../endpoints/EndpointDetails';
+import DocumentManagement from '../endpoints/DocumentManagement';
 
 interface ApiSectionProps {
   sectionId: string;
@@ -19,6 +20,29 @@ const ApiSection: React.FC<ApiSectionProps> = ({ sectionId }) => {
           Section not found
         </Typography>
       </Paper>
+    );
+  }
+
+  // If this section has contexts (Document Management), use the DocumentManagement component
+  if (section.contexts && section.contexts.length > 0) {
+    // If we have a specific endpoint ID, show that endpoint with context switching
+    if (endpointId) {
+      return (
+        <DocumentManagement 
+          contexts={section.contexts} 
+          sectionId={sectionId}
+          selectedEndpoint={endpointId}
+        />
+      );
+    }
+    
+    // If no specific endpoint, show the first endpoint (Create Document) by default
+    return (
+      <DocumentManagement 
+        contexts={section.contexts} 
+        sectionId={sectionId}
+        selectedEndpoint="create-document"
+      />
     );
   }
 

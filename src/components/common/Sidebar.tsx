@@ -23,6 +23,23 @@ import styles from './MethodLabel.module.css';
 
 const drawerWidth = 320;
 
+// Helper function to get HTTP method for document endpoints
+const getMethodForEndpoint = (endpointTitle: string): string => {
+  switch (endpointTitle) {
+    case 'Create Document':
+      return 'POST';
+    case 'Update Document':
+      return 'PATCH';
+    case 'Get Upload URL':
+    case 'List Documents':
+    case 'Get Document by ID':
+    case 'Get Amherst Documents':
+      return 'GET';
+    default:
+      return 'GET';
+  }
+};
+
 const Sidebar: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -165,7 +182,49 @@ const Sidebar: React.FC = () => {
                   
                   <Collapse in={openSections[section.id] || false} timeout="auto" unmountOnExit>
                     <List component="div" disablePadding>
-                      {section.endpoints.map((endpoint, index) => {
+                      {/* Handle sections with contexts (like Document Management) */}
+                      {section.contexts ? (
+                        // Show individual document endpoints for context-based sections
+                        ['Create Document', 'Get Upload URL', 'Update Document', 'List Documents', 'Get Document by ID', 'Get Amherst Documents'].map((endpointTitle, endpointIndex) => (
+                          <ListItemButton
+                            key={`${section.id}-${endpointIndex}`}
+                            component={Link}
+                            to={`/${section.id}/${endpointTitle.toLowerCase().replace(/\s+/g, '-')}`}
+                            selected={location.pathname === `/${section.id}/${endpointTitle.toLowerCase().replace(/\s+/g, '-')}`}
+                            sx={{ 
+                              pl: 2,
+                              pr: 2,
+                              py: 0.25,
+                              mb: 0.25,
+                              minHeight: '32px'
+                            }}
+                          >
+                            <Chip
+                              label={getMethodForEndpoint(endpointTitle)}
+                              size="small"
+                              className={`${styles.methodLabel} ${styles[getMethodForEndpoint(endpointTitle).toLowerCase()]}`}
+                              sx={{
+                                height: '20px',
+                                fontSize: '0.7rem',
+                                fontWeight: 600,
+                                borderRadius: '4px',
+                                '& .MuiChip-label': {
+                                  px: 1
+                                }
+                              }}
+                            />
+                            <ListItemText 
+                              primary={endpointTitle} 
+                              primaryTypographyProps={{ 
+                                fontSize: '0.85rem',
+                                fontWeight: location.pathname === `/${section.id}/${endpointTitle.toLowerCase().replace(/\s+/g, '-')}` ? 600 : 400,
+                                color: location.pathname === `/${section.id}/${endpointTitle.toLowerCase().replace(/\s+/g, '-')}` ? '#00487a' : 'text.secondary'
+                              }} 
+                            />
+                          </ListItemButton>
+                        ))
+                      ) : (
+                        section.endpoints.map((endpoint, index) => {
                         // Check if this is a parent endpoint with nested endpoints
                         const hasNestedEndpoints = endpoint.endpoints && endpoint.endpoints.length > 0;
                         const isDocumentSection = endpoint.title === 'Documents' && hasNestedEndpoints;
@@ -276,7 +335,7 @@ const Sidebar: React.FC = () => {
                             />
                           </ListItemButton>
                         );
-                      })}
+                      }))}
                     </List>
                   </Collapse>
                 </React.Fragment>

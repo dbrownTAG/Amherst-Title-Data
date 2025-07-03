@@ -14,7 +14,7 @@ import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import CloseIcon from '@mui/icons-material/Close';
 
 interface StatusMatrixProps {
-  type: 'cash-acquisitions' | 'retail-sales' | 'bulk-portfolio';
+  type: 'cash-acquisitions' | 'retail-sales' | 'financing-transactions' | 'financing-property';
 }
 
 const StatusMatrix: React.FC<StatusMatrixProps> = ({ type }) => {
@@ -41,11 +41,22 @@ const StatusMatrix: React.FC<StatusMatrixProps> = ({ type }) => {
             { name: 'Cancelled', returned: '24hours' }
           ]
         };
-      case 'bulk-portfolio':
+      case 'financing-transactions':
+        return {
+          title: 'Available Statuses',
+          description: 'This table shows which statuses are returned by the List Financing Transactions endpoint:',
+          statuses: [
+            { name: 'Open', returned: 'always' },
+            { name: 'In Progress', returned: 'always' },
+            { name: 'Funded', returned: 'always' },
+            { name: 'Closed', returned: 'never' }
+          ]
+        };
+      case 'financing-property':
       default:
         return {
           title: 'Available Statuses',
-          description: 'This table shows which statuses are returned by the List Portfolio Properties endpoint:',
+          description: 'This table shows which statuses are returned by the Get Financing Property endpoint:',
           statuses: [
             { name: 'All', returned: 'always' }
           ]
@@ -98,9 +109,6 @@ const StatusMatrix: React.FC<StatusMatrixProps> = ({ type }) => {
           </TableBody>
         </Table>
       </TableContainer>
-      <Typography variant="body2" sx={{ fontStyle: 'italic', color: 'text.secondary' }}>
-        Note: Use the specific 'Get by ID' endpoint to retrieve transactions of any status, regardless of when they were modified.
-      </Typography>
     </>
   );
 };

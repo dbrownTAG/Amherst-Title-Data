@@ -4,13 +4,15 @@ import { Link as RouterLink, useLocation } from 'react-router-dom';
 import { ApiEndpoint } from '../../data/apiData';
 import CodeBlock from '../common/CodeBlock';
 import StatusMatrix from '../common/StatusMatrix';
+import PropertyFieldsMatrix from '../common/PropertyFieldsMatrix';
 
 interface EndpointDetailsProps {
   endpoint: ApiEndpoint;
   sectionId?: string;
+  contextId?: string;
 }
 
-const EndpointDetails: React.FC<EndpointDetailsProps> = ({ endpoint, sectionId }) => {
+const EndpointDetails: React.FC<EndpointDetailsProps> = ({ endpoint, sectionId, contextId }) => {
   const theme = useTheme();
   const location = useLocation();
   const isListEndpoint = endpoint.title.startsWith('List');
@@ -43,15 +45,26 @@ const EndpointDetails: React.FC<EndpointDetailsProps> = ({ endpoint, sectionId }
         key={ep.title}
       >
         {/* Add breadcrumbs for document endpoints */}
-        {isDocumentEndpoint && sectionId && (
+        {(isDocumentEndpoint || contextId) && sectionId && (
           <Box sx={{ mb: 3 }}>
             <Breadcrumbs aria-label="breadcrumb">
               <RouterLink to={`/${sectionId}`} style={{ textDecoration: 'none', color: theme.palette.primary.main }}>
                 <Typography variant="body2">
-                  {sectionId === 'cash-acquisitions' ? 'Cash Acquisitions' : 'Retail Sales'}
+                  {sectionId === 'document-management' ? 'Document Management' : 
+                   sectionId === 'cash-acquisitions' ? 'Cash Acquisitions' : 
+                   sectionId === 'retail-sales' ? 'Retail Sales' :
+                   sectionId === 'financing-transactions' ? 'Financing Transactions' :
+                   sectionId === 'financing-property' ? 'Financing Property' : sectionId}
                 </Typography>
               </RouterLink>
-              <Typography variant="body2" color="text.secondary">Documents</Typography>
+              {contextId && (
+                <Typography variant="body2" color="text.secondary">
+                  {contextId === 'cash-acquisitions' ? 'Cash Acquisitions' :
+                   contextId === 'retail-sales' ? 'Retail Sales' :
+                   contextId === 'financing' ? 'Financing Transactions' :
+                   contextId === 'financing-property' ? 'Financing Transaction Properties' : contextId}
+                </Typography>
+              )}
               <Typography variant="body2" color="text.primary">{ep.title}</Typography>
             </Breadcrumbs>
           </Box>
@@ -187,7 +200,10 @@ const EndpointDetails: React.FC<EndpointDetailsProps> = ({ endpoint, sectionId }
         
         {(isListEndpoint && sectionId && !hasNestedEndpoints && !ep.title.toLowerCase().includes('document')) && (
           <Box sx={{ mb: 4 }}>
-            <StatusMatrix type={sectionId as 'cash-acquisitions' | 'retail-sales' | 'bulk-portfolio'} />
+            <StatusMatrix type={sectionId as 'cash-acquisitions' | 'retail-sales' | 'financing-transactions' | 'financing-property'} />
+            {sectionId === 'financing-transactions' && (
+              <PropertyFieldsMatrix type="financing-transactions" />
+            )}
           </Box>
         )}
 

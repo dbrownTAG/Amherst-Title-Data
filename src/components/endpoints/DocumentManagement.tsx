@@ -1,0 +1,481 @@
+import React, { useState } from 'react';
+import { Typography, Paper, Box, Tabs, Tab, Chip } from '@mui/material';
+import { DocumentContext, ApiEndpoint } from '../../data/apiData';
+import EndpointDetails from './EndpointDetails';
+
+interface DocumentManagementProps {
+  contexts: DocumentContext[];
+  sectionId: string;
+  selectedEndpoint?: string;
+}
+
+// Base document endpoints that will be adapted for each context
+const baseDocumentEndpoints: ApiEndpoint[] = [
+  {
+    title: 'Create Document',
+    method: 'POST',
+    path: '', // Will be set per context
+    description: [
+      'Creates a new document metadata entry for a transaction',
+      'Document upload must be completed separately using the upload URL endpoint',
+      'Returns the complete document metadata'
+    ],
+    requestHeaders: `Authorization: Bearer {access_token}
+Content-Type: application/json
+Accept: application/json`,
+    pathParams: [], // Will be set per context
+    requestBody: `{
+  "DocType": "Title_Commitment",
+  "Name": "Title_Commitment.pdf",
+  "OrderedDate": "2024-05-15T14:30:00.000Z"
+}`,
+    validationRules: [
+      'DocType must be a valid DocumentType value',
+      'Name must be a valid filename with appropriate extension',
+      'OrderedDate, if provided, must be a valid ISO 8601 timestamp',
+      'Notes is required when DocType is "Other"',
+      'Title company must be authorized for the specified transaction'
+    ],
+    responseExample: `{
+  "Id": "d15VH00000AbcdefGHI",
+  "Name": "Title_Commitment.pdf",
+  "DocType": "Title_Commitment",
+  "OrderedDate": "2024-05-15T14:30:00.000Z",
+  "UploadedDate": null,
+  "Status": null,
+  "Notes": null,
+  "Approved": false,
+  "Rejected": false
+}`,
+    interfaceDefinition: ''
+  },
+  {
+    title: 'Get Upload URL',
+    method: 'GET',
+    path: '', // Will be set per context
+    description: [
+      'Generates a signed URL for uploading a document to cloud storage',
+      'URL will expire after 15 minutes'
+    ],
+    requestHeaders: `Authorization: Bearer {access_token}
+Accept: application/json`,
+    pathParams: [], // Will be set per context
+    responseExample: `{
+  "SignedURL": "https://amherst-storage.s3.amazonaws.com/documents/a13VH00000HjjopYAB/Title_Commitment.pdf?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIOSFODNN7EXAMPLE%2F20240515%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20240515T123456Z&X-Amz-Expires=900&X-Amz-SignedHeaders=host&X-Amz-Signature=123456789abcdef"
+}`,
+    interfaceDefinition: `export interface UploadUrlResponse {
+  SignedURL: string
+}`
+  },
+  {
+    title: 'Update Document',
+    method: 'PATCH',
+    path: '', // Will be set per context
+    description: [
+      'Updates metadata for an existing document associated with a transaction',
+      'Can be used to update notes, confirm upload, or modify ordered date',
+      'Returns the updated document metadata'
+    ],
+    requestHeaders: `Authorization: Bearer {access_token}
+Content-Type: application/json
+Accept: application/json`,
+    pathParams: [], // Will be set per context
+    requestBody: `{
+  "Notes": "Updated document notes",
+  "Name": "Updated_Title_Commitment.pdf",
+  "OrderedDate": "2024-05-15T14:30:00.000Z"
+}`,
+    validationRules: [
+      'At least one of Notes, Name, or OrderedDate must be provided',
+      'Name, if provided, must be a valid filename with appropriate extension',
+      'OrderedDate, if provided, must be a valid ISO 8601 timestamp',
+      'Notes, if provided, must be a string',
+      'Title company must be authorized for the specified transaction'
+    ],
+    responseExample: `{
+  "Id": "d15VH00000AbcdefGHI",
+  "Name": "Title_Commitment_2.pdf",
+  "DocType": "Title_Commitment",
+  "OrderedDate": "2024-05-15T14:30:00.000Z",
+  "UploadedDate": null,
+  "Status": "Approved",
+  "Notes": "Revision on 5/2/2025",
+  "Approved": true,
+  "Rejected": false
+}`,
+    interfaceDefinition: ''
+  },
+  {
+    title: 'List Documents',
+    method: 'GET',
+    path: '', // Will be set per context
+    description: [
+      'Retrieves all documents associated with a transaction',
+      'Returns an array of document metadata objects',
+      'No pagination (returns all documents for the transaction)'
+    ],
+    requestHeaders: `Authorization: Bearer {access_token}
+Accept: application/json`,
+    pathParams: [], // Will be set per context
+    responseExample: `{
+  "data": [
+    {
+      "Id": "d15VH00000AbcdefGHI",
+      "Name": "Title_Commitment.pdf",
+      "DocType": "Title_Commitment",
+      "OrderedDate": "2024-05-15T14:30:00.000Z",
+      "UploadedDate": null,
+      "Status": "Rejected: Required signature missing",
+      "Notes": null,
+      "Approved": false,
+      "Rejected": true
+    },
+    {
+      "Id": "d15VH00000JklmnoOPQ",
+      "Name": "Deed.pdf",
+      "DocType": "Executed_Deed",
+      "OrderedDate": "2024-05-15T14:30:00.000Z",
+      "UploadedDate": "2024-05-16T10:15:30.000Z",
+      "Status": "Approved",
+      "Notes": null,
+      "Approved": true,
+      "Rejected": false
+    }
+  ]
+}`,
+    interfaceDefinition: ''
+  },
+  {
+    title: 'Get Document by ID',
+    method: 'GET',
+    path: '', // Will be set per context
+    description: [
+      'Retrieves metadata for a specific document associated with a transaction',
+      'Returns a single document metadata object'
+    ],
+    requestHeaders: `Authorization: Bearer {access_token}
+Accept: application/json`,
+    pathParams: [], // Will be set per context
+    responseExample: `{
+  "Id": "d15VH00000AbcdefGHI",
+  "Name": "Title_Commitment.pdf",
+  "DocType": "Title_Commitment",
+  "OrderedDate": "2024-05-15T14:30:00.000Z",
+  "UploadedDate": null,
+  "Status": null,
+  "Notes": null,
+  "Approved": false,
+  "Rejected": false
+}`,
+    interfaceDefinition: ''
+  },
+  {
+    title: 'Get Amherst Documents',
+    method: 'GET',
+    path: '', // Will be set per context
+    description: [
+      'Retrieves all Amherst-uploaded documents associated with a transaction',
+      'Returns documents with signed URLs for direct download',
+      'Only returns documents of AmherstDocumentType that have been uploaded',
+      'Signed URLs expire after 15 minutes'
+    ],
+    requestHeaders: `Authorization: Bearer {access_token}
+Accept: application/json`,
+    pathParams: [], // Will be set per context
+    responseExample: `{
+  "data": [
+    {
+      "Approved": true,
+      "DocType": "Assignment_of_Lease",
+      "Id": "a3fVG00000DJtR8YAL",
+      "Name": "10829850-206_SANDY_HILL_RD-Assignment_of_Lease.pdf",
+      "Notes": null,
+      "Rejected": false,
+      "Status": "Approved",
+      "UploadedDate": "2025-05-27T18:14:30.000+0000",
+      "SignedURL": "https://cfsigned-dev.amhev.com/sfid/500VG00000IH1a7YAD/10829850-206_SANDY_HILL_RD-Assignment_of_Lease.pdf?Expires=1748373911&Key-Pair-Id=APKAJP3C5KCRFH3YRQQQ&Signature=DaE~RanseEuz-e3783I2CzQV1nwcH2khvy-TzIngaYAdy86ejHvsZ6GryAxYwAyQBiMOl5oxT8miAj~99Cb10f8k5WfB5ekdu4EEiQFSNXXDClF3VIWqqfJCeAn92IqxgvQNv8VU88UEkg7gLqYziYyKn~UuZA0ats5Z7lWyAYLoe4usyNd4aR-a3bcT1cEGbewzp-l2mSlFQXQC~zMAReMU2ZDBC-YOTPscARqwlR1lHzA7eeTq7Bi2AiCosTNMICu-11omSRsmAQg2eSzGH4h1SiQGoTjZkXV0FVskmJjh9FvxG7EF52-XaK4AaB4WhXo2e0CdRIBYYCtGXBSAzg__"
+    }
+  ]
+}`,
+    interfaceDefinition: `export interface AmherstDocumentDto {
+  Approved: boolean | null
+  DocType: string
+  Id: string
+  Name: string
+  Notes: string | null
+  Rejected: boolean | null
+  Status: string | null
+  UploadedDate: string | null
+  SignedURL: string
+}
+
+export interface AmherstDocumentListResponseDto {
+  data: AmherstDocumentDto[]
+}`
+  }
+];
+
+// Function to contextualize endpoints based on selected context
+const getContextualizedEndpoints = (context: DocumentContext): ApiEndpoint[] => {
+  return baseDocumentEndpoints.map(endpoint => {
+    const contextualizedEndpoint = { ...endpoint };
+    
+    // Update path based on context
+    switch (context.id) {
+      case 'cash-acquisitions':
+        contextualizedEndpoint.path = `{amherst-api-base}/v1/title-data/cash-acquisitions/:id/documents${getEndpointSuffix(endpoint)}`;
+        contextualizedEndpoint.pathParams = getCashAcquisitionsParams(endpoint);
+        contextualizedEndpoint.validationRules = updateValidationRules(endpoint.validationRules || [], 'AcquisitionsDocumentType');
+        break;
+      case 'retail-sales':
+        contextualizedEndpoint.path = `{amherst-api-base}/v1/title-data/retail-sales/:id/documents${getEndpointSuffix(endpoint)}`;
+        contextualizedEndpoint.pathParams = getRetailSalesParams(endpoint);
+        contextualizedEndpoint.validationRules = updateValidationRules(endpoint.validationRules || [], 'DispositionsDocumentType');
+        break;
+      case 'financing':
+        contextualizedEndpoint.path = `{amherst-api-base}/v1/title-data/financing/:entityId/documents${getEndpointSuffix(endpoint)}`;
+        contextualizedEndpoint.pathParams = getFinancingParams(endpoint);
+        contextualizedEndpoint.validationRules = updateValidationRules(endpoint.validationRules || [], 'FinancingDocumentType');
+        break;
+      case 'financing-property':
+        contextualizedEndpoint.path = `{amherst-api-base}/v1/title-data/financing/:financingId/property/:propertyId/documents${getEndpointSuffix(endpoint)}`;
+        contextualizedEndpoint.pathParams = getFinancingPropertyParams(endpoint);
+        contextualizedEndpoint.validationRules = updateValidationRules(endpoint.validationRules || [], 'FinancingDocumentType');
+        if (contextualizedEndpoint.validationRules) {
+          contextualizedEndpoint.validationRules.push('Property must belong to the specified financing transaction');
+        }
+        break;
+    }
+
+    // Update interface definition
+    contextualizedEndpoint.interfaceDefinition = getContextualizedInterface(context.id);
+    
+    return contextualizedEndpoint;
+  });
+};
+
+// Helper functions
+const getEndpointSuffix = (endpoint: ApiEndpoint): string => {
+  if (endpoint.title === 'Get Upload URL') return '/:documentId/upload-url';
+  if (endpoint.title === 'Update Document' || endpoint.title === 'Get Document by ID') return '/:documentId';
+  if (endpoint.title === 'Get Amherst Documents') return '';
+  if (endpoint.title === 'List Documents') return '';
+  return '';
+};
+
+const getCashAcquisitionsParams = (endpoint: ApiEndpoint) => {
+  const baseParams = [{ name: 'id', type: 'string', required: true, description: 'Cash Acquisition Transaction ID (must be exactly 18 characters in length)' }];
+  if (endpoint.title === 'Get Upload URL' || endpoint.title === 'Update Document' || endpoint.title === 'Get Document by ID') {
+    baseParams.push({ name: 'documentId', type: 'string', required: true, description: 'Document ID (must be exactly 18 characters in length)' });
+  }
+  return baseParams;
+};
+
+const getRetailSalesParams = (endpoint: ApiEndpoint) => {
+  const baseParams = [{ name: 'id', type: 'string', required: true, description: 'Retail Sales Transaction ID (must be exactly 18 characters in length)' }];
+  if (endpoint.title === 'Get Upload URL' || endpoint.title === 'Update Document' || endpoint.title === 'Get Document by ID') {
+    baseParams.push({ name: 'documentId', type: 'string', required: true, description: 'Document ID (must be exactly 18 characters in length)' });
+  }
+  return baseParams;
+};
+
+const getFinancingParams = (endpoint: ApiEndpoint) => {
+  const baseParams = [{ name: 'entityId', type: 'string', required: true, description: 'Financing Transaction ID (must be exactly 18 characters in length)' }];
+  if (endpoint.title === 'Get Upload URL' || endpoint.title === 'Update Document' || endpoint.title === 'Get Document by ID') {
+    baseParams.push({ name: 'documentId', type: 'string', required: true, description: 'Document ID (must be exactly 18 characters in length)' });
+  }
+  return baseParams;
+};
+
+const getFinancingPropertyParams = (endpoint: ApiEndpoint) => {
+  const baseParams = [
+    { name: 'financingId', type: 'string', required: true, description: 'Financing Transaction ID (must be exactly 18 characters in length)' },
+    { name: 'propertyId', type: 'string', required: true, description: 'Property ID within the financing transaction' }
+  ];
+  if (endpoint.title === 'Get Upload URL' || endpoint.title === 'Update Document' || endpoint.title === 'Get Document by ID') {
+    baseParams.push({ name: 'documentId', type: 'string', required: true, description: 'Document ID (must be exactly 18 characters in length)' });
+  }
+  return baseParams;
+};
+
+const updateValidationRules = (rules: string[], documentType: string): string[] => {
+  return rules.map(rule => 
+    rule.includes('DocType must be a valid DocumentType value') 
+      ? `DocType must be a valid ${documentType} value`
+      : rule
+  );
+};
+
+const getContextualizedInterface = (contextId: string): string => {
+  const documentInterfaces = `export interface Document {
+  Id: string
+  Name: string
+  DocType: AcquisitionsDocumentType | DispositionsDocumentType | FinancingDocumentType
+  OrderedDate: string | null
+  UploadedDate: string | null
+  Status: string | null
+  Notes: string | null
+  Approved: boolean
+  Rejected: boolean
+}`;
+
+  const sharedInterfaces = `export interface Address {
+  Street: string | null
+  City: string | null
+  County: string | null
+  State: string | null
+  Zip: string | null
+}
+
+export interface ContactName {
+  FirstName: string | null
+  MiddleName: string | null
+  LastName: string | null
+}
+
+export interface HOA {
+  Contact: string
+  Email: string
+  MailingAddress: string
+  ManagementCompany: string
+  Name: string
+  PhoneNumber: string
+  Website: string
+}`;
+
+  return `${documentInterfaces}\n\n// Shared interfaces\n${sharedInterfaces}`;
+};
+
+const DocumentManagement: React.FC<DocumentManagementProps> = ({ contexts, sectionId, selectedEndpoint }) => {
+  // Use localStorage to persist context selection across navigation
+  const [selectedContext, setSelectedContext] = useState(() => {
+    const saved = localStorage.getItem('documentManagementContext');
+    return saved ? parseInt(saved, 10) : 0;
+  });
+
+  const handleContextChange = (event: React.SyntheticEvent, newValue: number) => {
+    setSelectedContext(newValue);
+    localStorage.setItem('documentManagementContext', newValue.toString());
+  };
+
+  const currentContext = contexts[selectedContext];
+
+  return (
+    <Box>
+      <Paper elevation={0} sx={{ p: 4, mb: 3, borderRadius: 2 }}>
+        <Typography variant="h4" sx={{ mb: 2, fontWeight: 700, color: '#00487a' }}>
+          Document Management
+        </Typography>
+        <Typography variant="body1" sx={{ mb: 3, color: 'text.secondary' }}>
+          The following endpoints allow for document management across all transaction types. 
+          Document operations are restricted to title companies specified in the allowedCompanies 
+          list in the token metadata. Use the tabs below to switch between different document 
+          contexts and their respective endpoint patterns.
+        </Typography>
+
+        <Tabs
+          value={selectedContext}
+          onChange={handleContextChange}
+          sx={{
+            borderBottom: 1,
+            borderColor: 'divider',
+            mb: 3,
+            '& .MuiTab-root': {
+              textTransform: 'none',
+              fontWeight: 600,
+              fontSize: '0.95rem',
+              color: '#4a5568',
+              '&.Mui-selected': {
+                color: '#00487a',
+              },
+            },
+            '& .MuiTabs-indicator': {
+              backgroundColor: '#00487a',
+            },
+          }}
+        >
+          {contexts.map((context, index) => (
+            <Tab key={context.id} label={context.title} />
+          ))}
+        </Tabs>
+      </Paper>
+
+      {currentContext && (
+        <Paper elevation={0} sx={{ p: 4, mb: 3, borderRadius: 2 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+            <Typography variant="h5" sx={{ mr: 2, fontWeight: 600, color: '#00487a' }}>
+              {currentContext.title}
+            </Typography>
+            <Chip 
+              label="Context"
+              size="small"
+              sx={{
+                backgroundColor: 'rgba(0, 72, 122, 0.1)',
+                color: '#00487a',
+                fontWeight: 500,
+                fontSize: '0.75rem'
+              }}
+            />
+          </Box>
+          
+          <Typography variant="body1" sx={{ mb: 3, color: 'text.secondary' }}>
+            {currentContext.description}
+          </Typography>
+
+          <Box sx={{ mb: 3, p: 2, backgroundColor: '#f5f2e8', borderRadius: 1 }}>
+            <Typography variant="body2" sx={{ fontWeight: 600, mb: 1, color: '#00487a' }}>
+              Base Path Pattern:
+            </Typography>
+            <Typography 
+              variant="body1" 
+              sx={{ 
+                fontFamily: 'monospace', 
+                fontWeight: 500,
+                color: 'text.primary'
+              }}
+            >
+              {currentContext.basePath}
+            </Typography>
+          </Box>
+
+        </Paper>
+      )}
+
+      {/* Show the selected endpoint with context-specific adaptations */}
+      {(() => {
+        const allEndpoints = getContextualizedEndpoints(currentContext);
+        
+        // If we have a selected endpoint, find and show only that one
+        if (selectedEndpoint) {
+          const targetEndpoint = allEndpoints.find(ep => 
+            ep.title.toLowerCase().replace(/\s+/g, '-') === selectedEndpoint
+          );
+          
+          if (targetEndpoint) {
+            return (
+              <EndpointDetails 
+                key={`${currentContext.id}-${targetEndpoint.title}`}
+                endpoint={targetEndpoint} 
+                sectionId={sectionId}
+                contextId={currentContext.id}
+              />
+            );
+          }
+        }
+        
+        // Default to showing the first endpoint if no match found
+        const firstEndpoint = allEndpoints[0];
+        return firstEndpoint ? (
+          <EndpointDetails 
+            key={`${currentContext.id}-${firstEndpoint.title}`}
+            endpoint={firstEndpoint} 
+            sectionId={sectionId}
+            contextId={currentContext.id}
+          />
+        ) : null;
+      })()}
+    </Box>
+  );
+};
+
+export default DocumentManagement;
