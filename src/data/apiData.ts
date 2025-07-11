@@ -1069,7 +1069,7 @@ Accept: application/json`,
     title: 'Financing Transactions',
     description: 'Financing transactions represent complex real estate financing deals that contain multiple properties. Each financing transaction can have transaction-level documents and individual properties with property-specific documents. Transaction types include JV Transactions, Securitizations, OCRs, and Internal Transactions.',
     responseObject: `{
-  "Id": "a12VH00000K9mX7", // string - 18 character ID
+  "Id": "a12VH00000K9mX7AAB", // string - 18 character ID
   "Actual_Close_Date__c": null, // string | null - ISO 8601 date format
   "Close_Date__c": "2025-06-30", // string | null - ISO 8601 date format
   "Comments__c": "Multi-property refinancing transaction", // string | null
@@ -1083,12 +1083,12 @@ Accept: application/json`,
     "Name": "Amherst Capital Partners II" // string | null
   },
   "Open_Date__c": "2025-01-15", // string | null - ISO 8601 date format
-  "Properties__c": "a13VH00000B7xQ2,a13VH00000C9mN5,a13VH00000D2kP8", // string | null - Comma-separated property IDs
-  "Properties_with_docs__c": "a13VH00000B7xQ2,a13VH00000C9mN5", // string | null - Properties with title documents
-  "Properties_with_recent_docs__c": "a13VH00000B7xQ2", // string | null - Properties with documents in last 12 hours
+  "Properties__c": "a13VH00000B7xQ2AAC,a13VH00000C9mN5AAD,a13VH00000D2kP8AAE", // string | null - Comma-separated property IDs
+  "Properties_with_docs__c": "a13VH00000B7xQ2AAC,a13VH00000C9mN5AAD", // string | null - Properties with title documents
+  "Properties_with_recent_docs__c": "a13VH00000B7xQ2AAC", // string | null - Properties with documents in last 12 hours
   "Ready_for_Closing_Date__c": null, // string | null - ISO 8601 date format
   "Ready_For_Funding_Date__c": null, // string | null - ISO 8601 date format
-  "Recently_Added_Properties__c": "a13VH00000D2kP8", // string | null - Properties added in last 12 hours
+  "Recently_Added_Properties__c": "a13VH00000D2kP8AAE", // string | null - Properties added in last 12 hours
   "Recently_Removed_Properties__c": null, // string | null - Properties removed in last 12 hours
   "Stage__c": "In Progress", // FinancingTransactionStage | null - Open, In Progress, Funded, Closed
   "Type__c": "Securitizations", // FinancingTransactionType | null - ECR, Internal Transfers, JV Sales, OCR, Refinance, Securitizations, Substitutions
@@ -1170,7 +1170,7 @@ Accept: application/json`,
         responseExample: `{
   "data": [
     {
-      "Id": "a12VH00000K9mX7",
+      "Id": "a12VH00000K9mX7AAB",
       "Actual_Close_Date__c": null,
       "Close_Date__c": "2025-06-30",
       "Comments__c": "Multi-property refinancing transaction",
@@ -1184,12 +1184,12 @@ Accept: application/json`,
         "Name": "Amherst Capital Partners II"
       },
       "Open_Date__c": "2025-01-15",
-      "Properties__c": "a13VH00000B7xQ2,a13VH00000C9mN5,a13VH00000D2kP8",
-      "Properties_with_docs__c": "a13VH00000B7xQ2,a13VH00000C9mN5",
-      "Properties_with_recent_docs__c": "a13VH00000B7xQ2",
+      "Properties__c": "a13VH00000B7xQ2AAC,a13VH00000C9mN5AAD,a13VH00000D2kP8AAE",
+      "Properties_with_docs__c": "a13VH00000B7xQ2AAC,a13VH00000C9mN5AAD",
+      "Properties_with_recent_docs__c": "a13VH00000B7xQ2AAC",
       "Ready_for_Closing_Date__c": null,
       "Ready_For_Funding_Date__c": null,
-      "Recently_Added_Properties__c": "a13VH00000D2kP8",
+      "Recently_Added_Properties__c": "a13VH00000D2kP8AAE",
       "Recently_Removed_Properties__c": null,
       "Stage__c": "In Progress",
       "Type__c": "Securitizations",
@@ -1235,7 +1235,7 @@ Accept: application/json`,
           }
         ],
         responseExample: `{
-  "Id": "a12VH00000K9mX7",
+  "Id": "a12VH00000K9mX7AAB",
   "Actual_Close_Date__c": null,
   "Close_Date__c": "2025-06-30",
   "Comments__c": "Multi-property refinancing transaction",
@@ -1249,12 +1249,12 @@ Accept: application/json`,
     "Name": "Amherst Capital Partners II"
   },
   "Open_Date__c": "2025-01-15",
-  "Properties__c": "a13VH00000B7xQ2,a13VH00000C9mN5,a13VH00000D2kP8",
-  "Properties_with_docs__c": "a13VH00000B7xQ2,a13VH00000C9mN5",
-  "Properties_with_recent_docs__c": "a13VH00000B7xQ2",
+  "Properties__c": "a13VH00000B7xQ2AAC,a13VH00000C9mN5AAD,a13VH00000D2kP8AAE",
+  "Properties_with_docs__c": "a13VH00000B7xQ2AAC,a13VH00000C9mN5AAD",
+  "Properties_with_recent_docs__c": "a13VH00000B7xQ2AAC",
   "Ready_for_Closing_Date__c": null,
   "Ready_For_Funding_Date__c": null,
-  "Recently_Added_Properties__c": "a13VH00000D2kP8",
+  "Recently_Added_Properties__c": "a13VH00000D2kP8AAE",
   "Recently_Removed_Properties__c": null,
   "Stage__c": "In Progress",
   "Type__c": "Securitizations",
@@ -1269,7 +1269,7 @@ Accept: application/json`,
     title: 'Financing Transaction Properties',
     description: 'Individual properties within financing transactions. Each property can have its own documents and detailed property information including valuation, acquisition details, and physical characteristics.',
     responseObject: `{
-  "Id": "a13VH00000B7xQ2", // string - Property ID
+  "Id": "a13VH00000B7xQ2AAC", // string - Property ID
   "AccountingCost": 245000, // number | null - Cost for accounting purposes
   "AcquisitionDate": "2023-06-15", // string | null - ISO 8601 date format
   "Action": "Hold", // string | null - Current action status
@@ -1277,7 +1277,7 @@ Accept: application/json`,
   "Baths": 2.5, // number | null - Number of bathrooms
   "Beds": 3, // number | null - Number of bedrooms
   "FairValue": 275000, // number | null - Current fair market value
-  "FinancingTransactionId": "a12VH00000K9mX7", // string | null - Parent financing transaction ID
+  "FinancingTransactionId": "a12VH00000K9mX7AAB", // string | null - Parent financing transaction ID
   "LastModifiedDate": "2025-05-27T18:14:30.000+0000", // string - ISO 8601 datetime format
   "MasterStatus": "Active", // string | null - Master status of the property
   "ParcelNumber": "12345-67890", // string | null - Tax parcel number
@@ -1345,7 +1345,7 @@ Accept: application/json`,
           }
         ],
         responseExample: `{
-  "Id": "a13VH00000B7xQ2",
+  "Id": "a13VH00000B7xQ2AAC",
   "AccountingCost": 245000,
   "AcquisitionDate": "2023-06-15",
   "Action": "Hold",
@@ -1353,7 +1353,7 @@ Accept: application/json`,
   "Baths": 2.5,
   "Beds": 3,
   "FairValue": 275000,
-  "FinancingTransactionId": "a12VH00000K9mX7",
+  "FinancingTransactionId": "a12VH00000K9mX7AAB",
   "LastModifiedDate": "2025-05-27T18:14:30.000+0000",
   "MasterStatus": "Active",
   "ParcelNumber": "12345-67890",
