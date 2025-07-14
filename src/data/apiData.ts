@@ -131,46 +131,26 @@ export enum PortfolioTransactionType {
 
 const financingInterface = `import { Address } from './shared.interface'
 
-export type FinancingTransactionStage =
-  | 'Open'
-  | 'In Progress'
-  | 'Funded'
-  | 'Closed'
-
-export type FinancingTransactionType =
-  | 'ECR'
-  | 'Internal Transfers'
-  | 'JV Sales'
-  | 'OCR'
-  | 'Refinance'
-  | 'Securitizations'
-  | 'Substitutions'
-
-export interface SfFinancingData {
+export interface FinancingTitleData {
+  ActualCloseDate: string | null
+  CloseDate: string | null
+  Comments: string | null
+  CurrentPartnership: string | null
+  FundingAndDisbursementDate: string | null
   Id: string
-  Actual_Close_Date__c: string | null
-  Close_Date__c: string | null
-  Comments__c: string | null
-  Current_Partnership__r: {
-    Name: string | null
-  } | null
-  Funding_and_Disbursement_Date__c: string | null
   LastModifiedDate: string
   Name: string | null
-  New_Partnership__r: {
-    Name: string | null
-  } | null
-  Open_Date__c: string | null
-  Properties_with_docs__c: string | null
-  Properties_with_recent_docs__c: string | null
-  Properties__c: string | null
-  Ready_for_Closing_Date__c: string | null
-  Ready_For_Funding_Date__c: string | null
-  Recently_Added_Properties__c: string | null
-  Recently_Removed_Properties__c: string | null
-  Stage__c: FinancingTransactionStage | null
-  Type__c: FinancingTransactionType | null
-  Import_ID__c: string | null
+  NewPartnership: string | null
+  OpenDate: string | null
+  Properties: string[]
+  PropertiesWithDocs: string[]
+  PropertiesWithRecentDocs: string[]
+  ReadyForClosingDate: string | null
+  ReadyForFundingDate: string | null
+  RecentlyAddedProperties: string[]
+  RecentlyRemovedProperties: string[]
+  Status: string | null
+  Type: string | null
 }`;
 
 const financingPropertyInterface = `import { Address } from './shared.interface'
@@ -1070,73 +1050,48 @@ Accept: application/json`,
     description: 'Financing transactions represent complex real estate financing deals that contain multiple properties. Each financing transaction can have transaction-level documents and individual properties with property-specific documents. Transaction types include JV Transactions, Securitizations, OCRs, and Internal Transactions.',
     responseObject: `{
   "Id": "a12VH00000K9mX7AAB", // string - 18 character ID
-  "Actual_Close_Date__c": null, // string | null - ISO 8601 date format
-  "Close_Date__c": "2025-06-30", // string | null - ISO 8601 date format
-  "Comments__c": "Multi-property refinancing transaction", // string | null
-  "Current_Partnership__r": { // object | null - Related partnership lookup
-    "Name": "Amherst Capital Partners" // string | null
-  },
-  "Funding_and_Disbursement_Date__c": null, // string | null - ISO 8601 date format
+  "ActualCloseDate": null, // string | null - ISO 8601 date format
+  "CloseDate": "2025-06-30", // string | null - ISO 8601 date format
+  "Comments": "Multi-property refinancing transaction", // string | null
+  "CurrentPartnership": "Amherst Capital Partners", // string | null - Partnership name
+  "FundingAndDisbursementDate": null, // string | null - ISO 8601 date format
   "LastModifiedDate": "2025-05-27T18:14:30.000+0000", // string - ISO 8601 datetime format
   "Name": "Texas Portfolio Refinance 2025", // string | null
-  "New_Partnership__r": { // object | null - Related partnership lookup
-    "Name": "Amherst Capital Partners II" // string | null
-  },
-  "Open_Date__c": "2025-01-15", // string | null - ISO 8601 date format
-  "Properties__c": "a13VH00000B7xQ2AAC,a13VH00000C9mN5AAD,a13VH00000D2kP8AAE", // string | null - Comma-separated property IDs
-  "Properties_with_docs__c": "a13VH00000B7xQ2AAC,a13VH00000C9mN5AAD", // string | null - Properties with title documents
-  "Properties_with_recent_docs__c": "a13VH00000B7xQ2AAC", // string | null - Properties with documents in last 12 hours
-  "Ready_for_Closing_Date__c": null, // string | null - ISO 8601 date format
-  "Ready_For_Funding_Date__c": null, // string | null - ISO 8601 date format
-  "Recently_Added_Properties__c": "a13VH00000D2kP8AAE", // string | null - Properties added in last 12 hours
-  "Recently_Removed_Properties__c": null, // string | null - Properties removed in last 12 hours
-  "Stage__c": "In Progress", // FinancingTransactionStage | null - Open, In Progress, Funded, Closed
-  "Type__c": "Securitizations", // FinancingTransactionType | null - ECR, Internal Transfers, JV Sales, OCR, Refinance, Securitizations, Substitutions
-  "Import_ID__c": "IMPORT-2025-001" // string | null - External import identifier
+  "NewPartnership": "Amherst Capital Partners II", // string | null - Partnership name
+  "OpenDate": "2025-01-15", // string | null - ISO 8601 date format
+  "Properties": ["a13VH00000B7xQ2AAC", "a13VH00000C9mN5AAD", "a13VH00000D2kP8AAE"], // string[] - Property IDs
+  "PropertiesWithDocs": ["a13VH00000B7xQ2AAC", "a13VH00000C9mN5AAD"], // string[] - Properties with title documents
+  "PropertiesWithRecentDocs": ["a13VH00000B7xQ2AAC"], // string[] - Properties with documents in last 12 hours
+  "ReadyForClosingDate": null, // string | null - ISO 8601 date format
+  "ReadyForFundingDate": null, // string | null - ISO 8601 date format
+  "RecentlyAddedProperties": ["a13VH00000D2kP8AAE"], // string[] - Properties added in last 12 hours
+  "RecentlyRemovedProperties": [], // string[] - Properties removed in last 12 hours
+  "Status": "In Progress", // string | null - Transaction status
+  "Type": "Securitizations" // string | null - Transaction type
 }
 
 Interface definition:
 \`\`\`typescript
-export type FinancingTransactionStage =
-  | 'Open'
-  | 'In Progress'
-  | 'Funded'
-  | 'Closed'
-
-export type FinancingTransactionType =
-  | 'ECR'
-  | 'Internal Transfers'
-  | 'JV Sales'
-  | 'OCR'
-  | 'Refinance'
-  | 'Securitizations'
-  | 'Substitutions'
-
-export interface SfFinancingData {
+export interface FinancingTitleData {
+  ActualCloseDate: string | null
+  CloseDate: string | null
+  Comments: string | null
+  CurrentPartnership: string | null
+  FundingAndDisbursementDate: string | null
   Id: string
-  Actual_Close_Date__c: string | null
-  Close_Date__c: string | null
-  Comments__c: string | null
-  Current_Partnership__r: {
-    Name: string | null
-  } | null
-  Funding_and_Disbursement_Date__c: string | null
   LastModifiedDate: string
   Name: string | null
-  New_Partnership__r: {
-    Name: string | null
-  } | null
-  Open_Date__c: string | null
-  Properties_with_docs__c: string | null
-  Properties_with_recent_docs__c: string | null
-  Properties__c: string | null
-  Ready_for_Closing_Date__c: string | null
-  Ready_For_Funding_Date__c: string | null
-  Recently_Added_Properties__c: string | null
-  Recently_Removed_Properties__c: string | null
-  Stage__c: FinancingTransactionStage | null
-  Type__c: FinancingTransactionType | null
-  Import_ID__c: string | null
+  NewPartnership: string | null
+  OpenDate: string | null
+  Properties: string[]
+  PropertiesWithDocs: string[]
+  PropertiesWithRecentDocs: string[]
+  ReadyForClosingDate: string | null
+  ReadyForFundingDate: string | null
+  RecentlyAddedProperties: string[]
+  RecentlyRemovedProperties: string[]
+  Status: string | null
+  Type: string | null
 }
 \`\`\`
 `,
@@ -1171,29 +1126,24 @@ Accept: application/json`,
   "data": [
     {
       "Id": "a12VH00000K9mX7AAB",
-      "Actual_Close_Date__c": null,
-      "Close_Date__c": "2025-06-30",
-      "Comments__c": "Multi-property refinancing transaction",
-      "Current_Partnership__r": {
-        "Name": "Amherst Capital Partners"
-      },
-      "Funding_and_Disbursement_Date__c": null,
+      "ActualCloseDate": null,
+      "CloseDate": "2025-06-30",
+      "Comments": "Multi-property refinancing transaction",
+      "CurrentPartnership": "Amherst Capital Partners",
+      "FundingAndDisbursementDate": null,
       "LastModifiedDate": "2025-05-27T18:14:30.000+0000",
       "Name": "Texas Portfolio Refinance 2025",
-      "New_Partnership__r": {
-        "Name": "Amherst Capital Partners II"
-      },
-      "Open_Date__c": "2025-01-15",
-      "Properties__c": "a13VH00000B7xQ2AAC,a13VH00000C9mN5AAD,a13VH00000D2kP8AAE",
-      "Properties_with_docs__c": "a13VH00000B7xQ2AAC,a13VH00000C9mN5AAD",
-      "Properties_with_recent_docs__c": "a13VH00000B7xQ2AAC",
-      "Ready_for_Closing_Date__c": null,
-      "Ready_For_Funding_Date__c": null,
-      "Recently_Added_Properties__c": "a13VH00000D2kP8AAE",
-      "Recently_Removed_Properties__c": null,
-      "Stage__c": "In Progress",
-      "Type__c": "Securitizations",
-      "Import_ID__c": "IMPORT-2025-001"
+      "NewPartnership": "Amherst Capital Partners II",
+      "OpenDate": "2025-01-15",
+      "Properties": ["a13VH00000B7xQ2AAC", "a13VH00000C9mN5AAD", "a13VH00000D2kP8AAE"],
+      "PropertiesWithDocs": ["a13VH00000B7xQ2AAC", "a13VH00000C9mN5AAD"],
+      "PropertiesWithRecentDocs": ["a13VH00000B7xQ2AAC"],
+      "ReadyForClosingDate": null,
+      "ReadyForFundingDate": null,
+      "RecentlyAddedProperties": ["a13VH00000D2kP8AAE"],
+      "RecentlyRemovedProperties": [],
+      "Status": "In Progress",
+      "Type": "Securitizations"
     }
   ],
   "pagination": {
@@ -1236,29 +1186,24 @@ Accept: application/json`,
         ],
         responseExample: `{
   "Id": "a12VH00000K9mX7AAB",
-  "Actual_Close_Date__c": null,
-  "Close_Date__c": "2025-06-30",
-  "Comments__c": "Multi-property refinancing transaction",
-  "Current_Partnership__r": {
-    "Name": "Amherst Capital Partners"
-  },
-  "Funding_and_Disbursement_Date__c": null,
+  "ActualCloseDate": null,
+  "CloseDate": "2025-06-30",
+  "Comments": "Multi-property refinancing transaction",
+  "CurrentPartnership": "Amherst Capital Partners",
+  "FundingAndDisbursementDate": null,
   "LastModifiedDate": "2025-05-27T18:14:30.000+0000",
   "Name": "Texas Portfolio Refinance 2025",
-  "New_Partnership__r": {
-    "Name": "Amherst Capital Partners II"
-  },
-  "Open_Date__c": "2025-01-15",
-  "Properties__c": "a13VH00000B7xQ2AAC,a13VH00000C9mN5AAD,a13VH00000D2kP8AAE",
-  "Properties_with_docs__c": "a13VH00000B7xQ2AAC,a13VH00000C9mN5AAD",
-  "Properties_with_recent_docs__c": "a13VH00000B7xQ2AAC",
-  "Ready_for_Closing_Date__c": null,
-  "Ready_For_Funding_Date__c": null,
-  "Recently_Added_Properties__c": "a13VH00000D2kP8AAE",
-  "Recently_Removed_Properties__c": null,
-  "Stage__c": "In Progress",
-  "Type__c": "Securitizations",
-  "Import_ID__c": "IMPORT-2025-001"
+  "NewPartnership": "Amherst Capital Partners II",
+  "OpenDate": "2025-01-15",
+  "Properties": ["a13VH00000B7xQ2AAC", "a13VH00000C9mN5AAD", "a13VH00000D2kP8AAE"],
+  "PropertiesWithDocs": ["a13VH00000B7xQ2AAC", "a13VH00000C9mN5AAD"],
+  "PropertiesWithRecentDocs": ["a13VH00000B7xQ2AAC"],
+  "ReadyForClosingDate": null,
+  "ReadyForFundingDate": null,
+  "RecentlyAddedProperties": ["a13VH00000D2kP8AAE"],
+  "RecentlyRemovedProperties": [],
+  "Status": "In Progress",
+  "Type": "Securitizations"
 }`,
         interfaceDefinition: `${financingInterface}\n\n// Shared interfaces\n${sharedInterfaces}`
       }
