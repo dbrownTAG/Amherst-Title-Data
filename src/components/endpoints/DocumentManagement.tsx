@@ -376,6 +376,7 @@ export enum FinancingDocumentType {
   OTHER = 'Other',
   PAYOFF = 'Payoff',
   PLAT_MAP = 'Plat_Map',
+  PURCHASE_CONTRACT = 'Purchase_Contract',
   RECORDED_DEED = 'Recorded_Deed',
   SCHEDULE_B = 'Schedule_B',
   SELLER_EDOCS = 'Seller_Edocs',

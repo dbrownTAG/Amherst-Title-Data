@@ -269,6 +269,7 @@ export enum FinancingDocumentType {
   OTHER = 'Other',
   PAYOFF = 'Payoff',
   PLAT_MAP = 'Plat_Map',
+  PURCHASE_CONTRACT = 'Purchase_Contract',
   RECORDED_DEED = 'Recorded_Deed',
   SCHEDULE_B = 'Schedule_B',
   SELLER_EDOCS = 'Seller_Edocs',
@@ -1380,11 +1381,23 @@ export const notes = [
 
 export const versionHistory = [
   {
+    version: 'v1.5.1',
+    date: '2025-07-21',
+    author: 'David Brown',
+    environments: {
+      qa: true,
+      prod: false
+    },
+    changes: [
+      '- Updated FinancingDocumentType to include PURCHASE_CONTRACT',
+    ]
+  },
+  {
     version: 'v1.5.0',
     date: '2025-07-02',
     author: 'David Brown',
     environments: {
-      qa: false,
+      qa: true,
       prod: false
     },
     changes: [
