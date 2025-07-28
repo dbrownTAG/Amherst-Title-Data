@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Typography, Paper, Box, Tabs, Tab, Chip } from '@mui/material';
+import { Typography, Paper, Box, Tabs, Tab } from '@mui/material';
 import { DocumentContext, ApiEndpoint } from '../../data/apiData';
 import EndpointDetails from './EndpointDetails';
 
@@ -223,22 +223,38 @@ const getContextualizedEndpoints = (context: DocumentContext): ApiEndpoint[] => 
     // Update path based on context
     switch (context.id) {
       case 'cash-acquisitions':
-        contextualizedEndpoint.path = `{amherst-api-base}/v1/title-data/cash-acquisitions/:id/documents${getEndpointSuffix(endpoint)}`;
+        if (endpoint.title === 'Get Amherst Documents') {
+          contextualizedEndpoint.path = `{amherst-api-base}/v1/title-data/cash-acquisitions/:id/amherst-documents`;
+        } else {
+          contextualizedEndpoint.path = `{amherst-api-base}/v1/title-data/cash-acquisitions/:id/documents${getEndpointSuffix(endpoint)}`;
+        }
         contextualizedEndpoint.pathParams = getCashAcquisitionsParams(endpoint);
         contextualizedEndpoint.validationRules = updateValidationRules(endpoint.validationRules || [], 'AcquisitionsDocumentType');
         break;
       case 'retail-sales':
-        contextualizedEndpoint.path = `{amherst-api-base}/v1/title-data/retail-sales/:id/documents${getEndpointSuffix(endpoint)}`;
+        if (endpoint.title === 'Get Amherst Documents') {
+          contextualizedEndpoint.path = `{amherst-api-base}/v1/title-data/retail-sales/:id/amherst-documents`;
+        } else {
+          contextualizedEndpoint.path = `{amherst-api-base}/v1/title-data/retail-sales/:id/documents${getEndpointSuffix(endpoint)}`;
+        }
         contextualizedEndpoint.pathParams = getRetailSalesParams(endpoint);
         contextualizedEndpoint.validationRules = updateValidationRules(endpoint.validationRules || [], 'DispositionsDocumentType');
         break;
       case 'financing':
-        contextualizedEndpoint.path = `{amherst-api-base}/v1/title-data/financing/:entityId/documents${getEndpointSuffix(endpoint)}`;
+        if (endpoint.title === 'Get Amherst Documents') {
+          contextualizedEndpoint.path = `{amherst-api-base}/v1/title-data/financing/:entityId/amherst-documents`;
+        } else {
+          contextualizedEndpoint.path = `{amherst-api-base}/v1/title-data/financing/:entityId/documents${getEndpointSuffix(endpoint)}`;
+        }
         contextualizedEndpoint.pathParams = getFinancingParams(endpoint);
         contextualizedEndpoint.validationRules = updateValidationRules(endpoint.validationRules || [], 'FinancingDocumentType');
         break;
       case 'financing-property':
-        contextualizedEndpoint.path = `{amherst-api-base}/v1/title-data/financing/:financingId/property/:propertyId/documents${getEndpointSuffix(endpoint)}`;
+        if (endpoint.title === 'Get Amherst Documents') {
+          contextualizedEndpoint.path = `{amherst-api-base}/v1/title-data/financing/:financingId/property/:propertyId/amherst-documents`;
+        } else {
+          contextualizedEndpoint.path = `{amherst-api-base}/v1/title-data/financing/:financingId/property/:propertyId/documents${getEndpointSuffix(endpoint)}`;
+        }
         contextualizedEndpoint.pathParams = getFinancingPropertyParams(endpoint);
         contextualizedEndpoint.validationRules = updateValidationRules(endpoint.validationRules || [], 'FinancingDocumentType');
         if (contextualizedEndpoint.validationRules) {
@@ -534,46 +550,7 @@ const DocumentManagement: React.FC<DocumentManagementProps> = ({ contexts, secti
         </Tabs>
       </Paper>
 
-      {currentContext && (
-        <Paper elevation={0} sx={{ p: 4, mb: 3, borderRadius: 2 }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-            <Typography variant="h5" sx={{ mr: 2, fontWeight: 600, color: '#00487a' }}>
-              {currentContext.title}
-            </Typography>
-            <Chip 
-              label="Context"
-              size="small"
-              sx={{
-                backgroundColor: 'rgba(0, 72, 122, 0.1)',
-                color: '#00487a',
-                fontWeight: 500,
-                fontSize: '0.75rem'
-              }}
-            />
-          </Box>
-          
-          <Typography variant="body1" sx={{ mb: 3, color: 'text.secondary' }}>
-            {currentContext.description}
-          </Typography>
 
-          <Box sx={{ mb: 3, p: 2, backgroundColor: '#f5f2e8', borderRadius: 1 }}>
-            <Typography variant="body2" sx={{ fontWeight: 600, mb: 1, color: '#00487a' }}>
-              Base Path Pattern:
-            </Typography>
-            <Typography 
-              variant="body1" 
-              sx={{ 
-                fontFamily: 'monospace', 
-                fontWeight: 500,
-                color: 'text.primary'
-              }}
-            >
-              {currentContext.basePath}
-            </Typography>
-          </Box>
-
-        </Paper>
-      )}
 
       {/* Show the selected endpoint with context-specific adaptations */}
       {(() => {
