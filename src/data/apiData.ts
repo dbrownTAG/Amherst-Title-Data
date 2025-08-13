@@ -1386,7 +1386,7 @@ export const versionHistory = [
     author: 'David Brown',
     environments: {
       qa: true,
-      prod: false
+      prod: true
     },
     changes: [
       '- Updated FinancingDocumentType to include PURCHASE_CONTRACT',
@@ -1398,7 +1398,7 @@ export const versionHistory = [
     author: 'David Brown',
     environments: {
       qa: true,
-      prod: false
+      prod: true
     },
     changes: [
       'New Features:',
@@ -1428,7 +1428,7 @@ export const versionHistory = [
     author: 'David Brown',
     environments: {
       qa: true,
-      prod: false
+      prod: true
     },
     changes: [
       'Document Management:',
@@ -1447,7 +1447,7 @@ export const versionHistory = [
     author: 'David Brown',
     environments: {
       qa: true,
-      prod: false
+      prod: true
     },
     changes: [
       'Document Management:',
@@ -1469,7 +1469,7 @@ export const versionHistory = [
     author: 'David Brown',
     environments: {
       qa: true,
-      prod: false
+      prod: true
     },
     changes: [
       'Document Management:',
@@ -1484,8 +1484,8 @@ export const versionHistory = [
     date: '2025-05-02',
     author: 'David Brown',
     environments: {
-      qa: false,
-      prod: false
+      qa: true,
+      prod: true
     },
     changes: [
       'Document Management:',
@@ -1500,8 +1500,8 @@ export const versionHistory = [
     date: '2025-04-27',
     author: 'David Brown',
     environments: {
-      qa: false,
-      prod: false
+      qa: true,
+      prod: true
     },
     changes: [
       'Document Management:',
@@ -1516,8 +1516,8 @@ export const versionHistory = [
     date: '2025-04-15',
     author: 'David Brown',
     environments: {
-      qa: false,
-      prod: false
+      qa: true,
+      prod: true
     },
     changes: [
       'Cash Acquisitions and Retail Sales:',
