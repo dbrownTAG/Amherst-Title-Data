@@ -347,9 +347,11 @@ const getContextualizedInterface = (contextId: string): string => {
 }
 
 export enum DispositionsDocumentType {
-  COMPILED_RELEASES = 'Compiled_Releases',
+  COMMISSION_INSTRUCTIONS = 'Commission_Instructions',
   COMPILED_MORTGAGES = 'Compiled_Mortgages',
+  COMPILED_RELEASES = 'Compiled_Releases',
   EMD_RECEIPT = 'EMD_Receipt',
+  FINAL_CONTRACT_AND_AMENDMENTS = 'Final_Contract_and_Amendments',
   FINAL_HUD = 'Final_HUD',
   HOA_CERT = 'HOA_Cert',
   MLC = 'MLC',
@@ -358,20 +360,27 @@ export enum DispositionsDocumentType {
   SELLER_EDOCS = 'Seller_Edocs',
   SELLER_HUD = 'Seller_HUD',
   SELLER_WET_DOCS = 'Seller_Wet_Docs',
+  TAX_CERT = 'Tax_Cert',
   TITLE_COMMITMENT = 'Title_Commitment',
   WIRE_CONFIRMATION = 'Wire_Confirmation',
 }
 
 export enum AmherstDocumentType {
   AMENDMENTS_TO_CONTRACT = 'Amendments_to_Contract',
+  AMHERST_WIRING_INSTRUCTIONS = 'Amherst_Wiring_Instructions',
   ASSIGNMENT_OF_LEASE = 'Assignment_of_Lease',
   COMMISSION_INSTRUCTIONS = 'Commission_Instructions',
+  EXECUTED_ADDTL_SIGNED_CLOSING_DOCS = 'Executed_Addtl_Signed_Closing_Docs',
   EXECUTED_CLOSING_PACKAGE = 'Executed_Closing_Package',
+  EXECUTED_FIRPTA = 'Executed_FIRPTA',
+  EXECUTED_WET_CLOSING_DOCS = 'Executed_Wet_Closing_Docs',
   FIRPTA = 'FIRPTA',
   INVOICE = 'Invoice',
   LEASE = 'Lease',
   LEASE_BACK = 'Leaseback',
+  OPERATING_WIRING_INSTRUCTIONS = 'Operating_Wiring_Instructions',
   PURCHASE_CONTRACT = 'Purchase_Contract',
+  TERMINATION_AGREEMENT = 'Termination_Agreement',
 }
 
 export enum FinancingDocumentType {

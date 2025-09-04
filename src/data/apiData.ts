@@ -46,6 +46,7 @@ const cashAcquisitionsInterface = `import { Address, ContactName } from './share
 
 export interface AcquisitionTitleData {
   AlternatePropertyId: string
+  AssetId: string | null
   BuyerAddress: Address
   BuyerAgent: string
   BuyerName: string
@@ -75,6 +76,7 @@ const retailSalesInterface = `import { Address, ContactName } from './shared.int
 
 export interface DispositionTitleData {
   AlternatePropertyId: string
+  AssetId: string | null
   BuyerAgent: ContactName | null
   BuyerName: ContactName | null
   ClosingDate: string
@@ -161,6 +163,7 @@ export interface FinancingPropertyData {
   AcquisitionDate: string | null
   Action: string | null
   AlternatePropertyId: string | null
+  AssetId: string | null
   Baths: number | null
   Beds: number | null
   FairValue: number | null
@@ -224,9 +227,11 @@ const documentInterfaces = `export enum AcquisitionsDocumentType {
 }
 
 export enum DispositionsDocumentType {
-  COMPILED_RELEASES = 'Compiled_Releases',
+  COMMISSION_INSTRUCTIONS = 'Commission_Instructions',
   COMPILED_MORTGAGES = 'Compiled_Mortgages',
+  COMPILED_RELEASES = 'Compiled_Releases',
   EMD_RECEIPT = 'EMD_Receipt',
+  FINAL_CONTRACT_AND_AMENDMENTS = 'Final_Contract_and_Amendments',
   FINAL_HUD = 'Final_HUD',
   HOA_CERT = 'HOA_Cert',
   MLC = 'MLC',
@@ -235,20 +240,27 @@ export enum DispositionsDocumentType {
   SELLER_EDOCS = 'Seller_Edocs',
   SELLER_HUD = 'Seller_HUD',
   SELLER_WET_DOCS = 'Seller_Wet_Docs',
+  TAX_CERT = 'Tax_Cert',
   TITLE_COMMITMENT = 'Title_Commitment',
   WIRE_CONFIRMATION = 'Wire_Confirmation',
 }
 
 export enum AmherstDocumentType {
   AMENDMENTS_TO_CONTRACT = 'Amendments_to_Contract',
+  AMHERST_WIRING_INSTRUCTIONS = 'Amherst_Wiring_Instructions',
   ASSIGNMENT_OF_LEASE = 'Assignment_of_Lease',
   COMMISSION_INSTRUCTIONS = 'Commission_Instructions',
+  EXECUTED_ADDTL_SIGNED_CLOSING_DOCS = 'Executed_Addtl_Signed_Closing_Docs',
   EXECUTED_CLOSING_PACKAGE = 'Executed_Closing_Package',
+  EXECUTED_FIRPTA = 'Executed_FIRPTA',
+  EXECUTED_WET_CLOSING_DOCS = 'Executed_Wet_Closing_Docs',
   FIRPTA = 'FIRPTA',
   INVOICE = 'Invoice',
   LEASE = 'Lease',
   LEASE_BACK = 'Leaseback',
+  OPERATING_WIRING_INSTRUCTIONS = 'Operating_Wiring_Instructions',
   PURCHASE_CONTRACT = 'Purchase_Contract',
+  TERMINATION_AGREEMENT = 'Termination_Agreement',
 }
 
 export enum FinancingDocumentType {
@@ -354,6 +366,7 @@ export const apiData: ApiSection[] = [
     responseObject: `{
   "Id": "a13VH00000HjjopYAB", // string - 18 character ID
   "AlternatePropertyId": "10003399", // string
+  "AssetId": "MSR-2024-TX-0012", // string | null - MSR Property ID
   "BuyerAddress": { // Address
     "City": "Austin", // string
     "County": "Travis", // string
@@ -411,6 +424,7 @@ import { Address, ContactName } from './shared.interface'
 
 export interface AcquisitionTitleData {
   AlternatePropertyId: string
+  AssetId: string | null
   BuyerAddress: Address
   BuyerAgent: string
   BuyerName: string
@@ -468,6 +482,7 @@ Accept: application/json`,
     {
       "Id": "a13VH00000HjjopYAB",
       "AlternatePropertyId": "10003399",
+      "AssetId": "MSR-2024-TX-0012",
       "BuyerAddress": {
         "City": "Austin",
         "County": "Travis",
@@ -559,6 +574,7 @@ Accept: application/json`,
         responseExample: `{
   "Id": "a13VH00000HjjopYAB",
   "AlternatePropertyId": "10003399",
+  "AssetId": "MSR-2024-TX-0012",
   "BuyerAddress": {
     "City": "Austin",
     "County": "Travis",
@@ -645,6 +661,7 @@ Accept: application/json`,
         responseExample: `{
   "Id": "a13VH00000HjjopYAB",
   "AlternatePropertyId": "10003399",
+  "AssetId": "MSR-2024-TX-0012",
   "BuyerAddress": {
     "City": "Austin",
     "County": "Travis",
@@ -695,16 +712,84 @@ Accept: application/json`,
   "TentativeDate": "2024-12-30"
 }`,
         interfaceDefinition: `${cashAcquisitionsInterface}\n\n// Shared interfaces\n${sharedInterfaces}`
+      },
+      {
+        title: 'Get Amherst Documents',
+        method: 'GET',
+        path: '{amherst-api-base}/v1/title-data/cash-acquisitions/:id/amherst-documents',
+        description: [
+          'Retrieves Amherst-uploaded documents for a cash acquisition transaction',
+          'Returns document metadata with signed URLs for download',
+          'Available document types: Termination Agreement, Executed FIRPTA, Executed Wet Closing Docs, Executed Addtl Signed Closing Docs, Amherst Wiring Instructions, Operating Wiring Instructions, AC'
+        ],
+        requestHeaders: `Authorization: Bearer {access_token}
+Content-Type: application/json
+Accept: application/json`,
+        pathParams: [
+          {
+            name: 'id',
+            type: 'string',
+            required: true,
+            description: 'Transaction ID (must be exactly 18 characters in length)'
+          }
+        ],
+        responseExample: `{
+  "data": [
+    {
+      "Approved": true,
+      "DocType": "Termination_Agreement",
+      "Id": "a2HVH00000BZ1qAABT",
+      "Name": "Termination Agreement - 123 Main St.pdf",
+      "Notes": "Signed by all parties",
+      "Rejected": false,
+      "Status": "Approved",
+      "UploadedDate": "2024-12-15T14:30:00.000+0000",
+      "SignedURL": "https://amherst-docs.s3.amazonaws.com/termination-agreement.pdf?X-Amz-Algorithm=AWS4-HMAC-SHA256&..."
+    },
+    {
+      "Approved": null,
+      "DocType": "Executed_FIRPTA",
+      "Id": "a2HVH00000BZ1qBABT",
+      "Name": "FIRPTA Withholding Certificate.pdf",
+      "Notes": null,
+      "Rejected": false,
+      "Status": "Pending Review",
+      "UploadedDate": "2024-12-16T10:15:00.000+0000",
+      "SignedURL": "https://amherst-docs.s3.amazonaws.com/firpta-cert.pdf?X-Amz-Algorithm=AWS4-HMAC-SHA256&..."
+    }
+  ]
+}`,
+        interfaceDefinition: `// Amherst Document Response
+export interface AmherstDocumentDto {
+  Approved: boolean | null
+  DocType: string
+  Id: string
+  Name: string
+  Notes: string | null
+  Rejected: boolean | null
+  Status: string | null
+  UploadedDate: string | null
+  SignedURL: string
+}
+
+export interface AmherstDocumentListResponseDto {
+  data: AmherstDocumentDto[]
+}`
       }
     ]
   },
   {
+
+
+
+    
     id: 'retail-sales',
     title: 'Retail Sales',
     description: 'Note: As of v1.4.4, document types are separated into AcquisitionsDocumentType and DispositionsDocumentType.',
     responseObject: `{
   "Id": "a204u000003NnmcAAC", // string - 18 character ID
   "AlternatePropertyId": "p2061794", // string
+  "AssetId": "MSR-2024-TX-0089", // string | null - MSR Property ID
   "BuyerAgent": { // ContactName | null
     "FirstName": "Eddie", // string
     "MiddleName": null, // string | null
@@ -750,6 +835,7 @@ import { Address, ContactName } from './shared.interface'
 
 export interface DispositionTitleData {
   AlternatePropertyId: string
+  AssetId: string | null
   BuyerAgent: ContactName | null
   BuyerName: ContactName | null
   ClosingDate: string
@@ -808,6 +894,7 @@ Accept: application/json`,
     {
       "Id": "a204u000003NnmcAAC",
       "AlternatePropertyId": "p2061794",
+      "AssetId": "MSR-2024-TX-0089",
       "BuyerAgent": {
         "FirstName": "Eddie",
         "MiddleName": null,
@@ -888,6 +975,7 @@ Accept: application/json`,
         responseExample: `{
   "Id": "a204u000003NnmcAAC",
   "AlternatePropertyId": "p2061794",
+  "AssetId": "MSR-2024-TX-0089",
   "BuyerAgent": {
     "FirstName": "Eddie",
     "MiddleName": null,
@@ -963,6 +1051,7 @@ Accept: application/json`,
         responseExample: `{
   "Id": "a204u000003NnmcAAC",
   "AlternatePropertyId": "p2061794",
+  "AssetId": "MSR-2024-TX-0089",
   "BuyerAgent": {
     "FirstName": "Eddie",
     "MiddleName": null,
@@ -1002,6 +1091,69 @@ Accept: application/json`,
   "TentativeDate": ""
 }`,
         interfaceDefinition: `${retailSalesInterface}\n\n// Shared interfaces\n${sharedInterfaces}`
+      },
+      {
+        title: 'Get Amherst Documents',
+        method: 'GET',
+        path: '{amherst-api-base}/v1/title-data/retail-sales/:id/amherst-documents',
+        description: [
+          'Retrieves Amherst-uploaded documents for a retail sales transaction',
+          'Returns document metadata with signed URLs for download',
+          'Available document types: Termination Agreement, Executed FIRPTA, Executed Wet Closing Docs, Executed Addtl Signed Closing Docs, Amherst Wiring Instructions, Operating Wiring Instructions, AC'
+        ],
+        requestHeaders: `Authorization: Bearer {access_token}
+Content-Type: application/json
+Accept: application/json`,
+        pathParams: [
+          {
+            name: 'id',
+            type: 'string',
+            required: true,
+            description: 'Transaction ID (must be exactly 18 characters in length)'
+          }
+        ],
+        responseExample: `{
+  "data": [
+    {
+      "Approved": true,
+      "DocType": "Amherst_Wiring_Instructions",
+      "Id": "a2HVH00000BZ1qCABT",
+      "Name": "Wiring Instructions - Amherst.pdf",
+      "Notes": "Updated wiring details for closing",
+      "Rejected": false,
+      "Status": "Approved",
+      "UploadedDate": "2024-12-14T09:45:00.000+0000",
+      "SignedURL": "https://amherst-docs.s3.amazonaws.com/wiring-instructions.pdf?X-Amz-Algorithm=AWS4-HMAC-SHA256&..."
+    },
+    {
+      "Approved": false,
+      "DocType": "Executed_Wet_Closing_Docs",
+      "Id": "a2HVH00000BZ1qDABT",
+      "Name": "Wet Closing Documents - Complete Set.pdf",
+      "Notes": "Missing signature on page 12",
+      "Rejected": true,
+      "Status": "Rejected",
+      "UploadedDate": "2024-12-13T16:20:00.000+0000",
+      "SignedURL": "https://amherst-docs.s3.amazonaws.com/wet-closing-docs.pdf?X-Amz-Algorithm=AWS4-HMAC-SHA256&..."
+    }
+  ]
+}`,
+        interfaceDefinition: `// Amherst Document Response
+export interface AmherstDocumentDto {
+  Approved: boolean | null
+  DocType: string
+  Id: string
+  Name: string
+  Notes: string | null
+  Rejected: boolean | null
+  Status: string | null
+  UploadedDate: string | null
+  SignedURL: string
+}
+
+export interface AmherstDocumentListResponseDto {
+  data: AmherstDocumentDto[]
+}`
       }
     ]
   },
@@ -1024,7 +1176,7 @@ Accept: application/json`,
         title: 'Retail Sales',
         description: 'Document management for retail sales transactions',
         basePath: '/v1/title-data/retail-sales/:id/documents',
-        documentTypes: 'DispositionsDocumentType (13 types): COMPILED_RELEASES, COMPILED_MORTGAGES, EMD_RECEIPT, FINAL_HUD, HOA_CERT, MLC, OTHER, PAYOFF, SELLER_EDOCS, SELLER_HUD, SELLER_WET_DOCS, TITLE_COMMITMENT, WIRE_CONFIRMATION',
+        documentTypes: 'DispositionsDocumentType (16 types): COMMISSION_INSTRUCTIONS, COMPILED_RELEASES, COMPILED_MORTGAGES, EMD_RECEIPT, FINAL_CONTRACT_AND_AMENDMENTS, FINAL_HUD, HOA_CERT, MLC, OTHER, PAYOFF, SELLER_EDOCS, SELLER_HUD, SELLER_WET_DOCS, TAX_CERT, TITLE_COMMITMENT, WIRE_CONFIRMATION',
         endpoints: []
       },
       {
@@ -1032,7 +1184,7 @@ Accept: application/json`,
         title: 'Financing Transactions',
         description: 'Document management for financing transactions',
         basePath: '/v1/title-data/financing/:entityId/documents',
-        documentTypes: 'FinancingDocumentType (24 types): BUYER_SIGNING_DOCS, CCR, COMPILED_MORTGAGES, COMPILED_RELEASES, CONFIRMATION_OF_NO_HOA, EMD_RECEIPT, EXECUTED_DEED, FINAL_CONTRACT_AND_AMENDMENTS, FINAL_HUD, FIRPTA, HOA_CERT, HOA_CONFIRMATION, MLC, NON_FOREIGN_CERT, OTHER, PAYOFF, PLAT_MAP, RECORDED_DEED, SCHEDULE_B, SELLER_EDOCS, SELLER_HUD, SELLER_WET_DOCS, TAX_CERT, TITLE_COMMITMENT, TITLE_POLICY, UNEXECUTED_DEED, WIRE_CONFIRMATION',
+        documentTypes: 'FinancingDocumentType (27 types): BUYER_SIGNING_DOCS, CCR, COMPILED_MORTGAGES, COMPILED_RELEASES, CONFIRMATION_OF_NO_HOA, EMD_RECEIPT, EXECUTED_DEED, FINAL_CONTRACT_AND_AMENDMENTS, FINAL_HUD, FIRPTA, HOA_CERT, HOA_CONFIRMATION, MLC, NON_FOREIGN_CERT, OTHER, PAYOFF, PLAT_MAP, PURCHASE_CONTRACT, RECORDED_DEED, SCHEDULE_B, SELLER_EDOCS, SELLER_HUD, SELLER_WET_DOCS, TAX_CERT, TITLE_COMMITMENT, TITLE_POLICY, UNEXECUTED_DEED, WIRE_CONFIRMATION',
         endpoints: []
       },
       {
@@ -1040,7 +1192,7 @@ Accept: application/json`,
         title: 'Financing Transaction Properties',
         description: 'Document management for individual properties within financing transactions',
         basePath: '/v1/title-data/financing/:financingId/property/:propertyId/documents',
-        documentTypes: 'FinancingDocumentType (24 types): BUYER_SIGNING_DOCS, CCR, COMPILED_MORTGAGES, COMPILED_RELEASES, CONFIRMATION_OF_NO_HOA, EMD_RECEIPT, EXECUTED_DEED, FINAL_CONTRACT_AND_AMENDMENTS, FINAL_HUD, FIRPTA, HOA_CERT, HOA_CONFIRMATION, MLC, NON_FOREIGN_CERT, OTHER, PAYOFF, PLAT_MAP, RECORDED_DEED, SCHEDULE_B, SELLER_EDOCS, SELLER_HUD, SELLER_WET_DOCS, TAX_CERT, TITLE_COMMITMENT, TITLE_POLICY, UNEXECUTED_DEED, WIRE_CONFIRMATION',
+        documentTypes: 'FinancingDocumentType (27 types): BUYER_SIGNING_DOCS, CCR, COMPILED_MORTGAGES, COMPILED_RELEASES, CONFIRMATION_OF_NO_HOA, EMD_RECEIPT, EXECUTED_DEED, FINAL_CONTRACT_AND_AMENDMENTS, FINAL_HUD, FIRPTA, HOA_CERT, HOA_CONFIRMATION, MLC, NON_FOREIGN_CERT, OTHER, PAYOFF, PLAT_MAP, PURCHASE_CONTRACT, RECORDED_DEED, SCHEDULE_B, SELLER_EDOCS, SELLER_HUD, SELLER_WET_DOCS, TAX_CERT, TITLE_COMMITMENT, TITLE_POLICY, UNEXECUTED_DEED, WIRE_CONFIRMATION',
         endpoints: []
       }
     ]
@@ -1296,6 +1448,7 @@ Accept: application/json`,
   "AcquisitionDate": "2023-06-15",
   "Action": "Hold",
   "AlternatePropertyId": "AMH-TX-001",
+  "AssetId": "MSR-2023-TX-0456",
   "Baths": 2.5,
   "Beds": 3,
   "FairValue": 275000,
@@ -1380,6 +1533,32 @@ export const notes = [
 ];
 
 export const versionHistory = [
+  {
+    version: 'v1.5.2',
+    date: '2025-08-29',
+    author: 'David Brown',
+    environments: {
+      qa: true,
+      prod: true
+    },
+    changes: [
+      'API Response Updates:',
+      '- Added AssetId field to all transaction payloads (cash-acquisitions, retail-sales, financing properties)',
+      'Document Management Enhancements:',
+      '- Retail Sales document creation now supports additional document types:',
+      '- - Tax Cert (TAX_CERT)',
+      '- - Final Contract and Amendments (FINAL_CONTRACT_AND_AMENDMENTS)',
+      '- - Commission Instructions (COMMISSION_INSTRUCTIONS)',
+      'Amherst Documents:',
+      '- Updated amherst-documents endpoint for both acquisitions and dispositions to return additional document types:',
+      '- - Termination Agreement',
+      '- - Executed FIRPTA',
+      '- - Executed Wet Closing Docs',
+      '- - Executed Addtl Signed Closing Docs',
+      '- - Amherst Wiring Instructions',
+      '- - Operating Wiring Instructions',
+    ]
+  },
   {
     version: 'v1.5.1',
     date: '2025-07-21',
