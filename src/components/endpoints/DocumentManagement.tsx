@@ -18,6 +18,7 @@ const baseDocumentEndpoints: ApiEndpoint[] = [
     description: [
       'Creates a new document metadata entry for a transaction',
       'Document upload must be completed separately using the upload URL endpoint',
+      'If a pending document of the same DocType already exists (not yet uploaded/confirmed), you must reuse that record; the API prevents creating duplicates',
       'Returns the complete document metadata'
     ],
     requestHeaders: `Authorization: Bearer {access_token}
@@ -55,7 +56,8 @@ Accept: application/json`,
     path: '', // Will be set per context
     description: [
       'Generates a signed URL for uploading a document to cloud storage',
-      'URL will expire after 15 minutes'
+      'URL will expire after 15 minutes',
+      'Use the document Id returned from Create Document (or from List/Get) as :documentId'
     ],
     requestHeaders: `Authorization: Bearer {access_token}
 Accept: application/json`,
@@ -73,7 +75,8 @@ Accept: application/json`,
     path: '', // Will be set per context
     description: [
       'Updates metadata for an existing document associated with a transaction',
-      'Can be used to update notes, confirm upload, or modify ordered date',
+      'Use ConfirmUpload to finalize the upload after successfully PUTing the file to the signed URL; this step is required to complete the upload process',
+      'Can also be used to update Notes, Name, or OrderedDate',
       'Returns the updated document metadata'
     ],
     requestHeaders: `Authorization: Bearer {access_token}
@@ -81,15 +84,17 @@ Content-Type: application/json
 Accept: application/json`,
     pathParams: [], // Will be set per context
     requestBody: `{
+  "ConfirmUpload": true,
   "Notes": "Updated document notes",
   "Name": "Updated_Title_Commitment.pdf",
   "OrderedDate": "2024-05-15T14:30:00.000Z"
 }`,
     validationRules: [
-      'At least one of Notes, Name, or OrderedDate must be provided',
+      'At least one of ConfirmUpload, Notes, Name, or OrderedDate must be provided',
       'Name, if provided, must be a valid filename with appropriate extension',
       'OrderedDate, if provided, must be a valid ISO 8601 timestamp',
       'Notes, if provided, must be a string',
+      'Set ConfirmUpload to true after the file upload succeeds to mark the document as uploaded; this is required to finalize the upload',
       'Title company must be authorized for the specified transaction'
     ],
     responseExample: `{
@@ -112,7 +117,8 @@ Accept: application/json`,
     description: [
       'Retrieves all documents associated with a transaction',
       'Returns an array of document metadata objects',
-      'No pagination (returns all documents for the transaction)'
+      'No pagination (returns all documents for the transaction)',
+      'Use to locate an existing pending document (UploadedDate is null) of the same DocType to avoid creating duplicates'
     ],
     requestHeaders: `Authorization: Bearer {access_token}
 Accept: application/json`,
@@ -531,6 +537,31 @@ const DocumentManagement: React.FC<DocumentManagementProps> = ({ contexts, secti
           list in the token metadata. Use the tabs below to switch between different document 
           contexts and their respective endpoint patterns.
         </Typography>
+        <Typography variant="subtitle1" sx={{ fontWeight: 600, mb: 1 }}>
+          How to upload a file
+        </Typography>
+        <Box component="ol" sx={{ pl: 3, mb: 3 }}>
+          <Box component="li" sx={{ mb: 1.5 }}>
+            <Typography variant="body2">
+              Create or reuse document metadata. First, list existing documents with <strong>GET /documents</strong> (or retrieve a specific one with <strong>GET /documents/:documentId</strong>) to check for a pending document of the same <code>DocType</code> (<code>UploadedDate</code> is null). If one exists, reuse its <code>Id</code>. Otherwise, call <strong>POST /documents</strong> with <code>DocType</code> (and optional <code>Name</code>, <code>OrderedDate</code>, <code>Notes</code>). The API prevents creating a duplicate pending document of the same <code>DocType</code>.
+            </Typography>
+          </Box>
+          <Box component="li" sx={{ mb: 1.5 }}>
+            <Typography variant="body2">
+              Request a signed upload URL with <strong>GET /documents/:documentId/upload-url</strong> using the <code>Id</code> from step 1. The returned <code>SignedURL</code> expires in 15 minutes.
+            </Typography>
+          </Box>
+          <Box component="li" sx={{ mb: 1.5 }}>
+            <Typography variant="body2">
+              Upload the file bytes to the <code>SignedURL</code> via HTTP <strong>PUT</strong>. Include appropriate headers such as <code>Content-Type</code> and <code>Content-Length</code>. Do not send API authorization headers to the SignedURL host.
+            </Typography>
+          </Box>
+          <Box component="li">
+            <Typography variant="body2">
+              Finalize the upload by calling <strong>PATCH /documents/:documentId</strong> with body <code>{'{"ConfirmUpload": true}'}</code>. This confirmation is required; without it, the document remains pending.
+            </Typography>
+          </Box>
+        </Box>
 
         <Tabs
           value={selectedContext}
