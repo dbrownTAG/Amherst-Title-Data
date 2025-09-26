@@ -553,12 +553,12 @@ const DocumentManagement: React.FC<DocumentManagementProps> = ({ contexts, secti
           </Box>
           <Box component="li" sx={{ mb: 1.5 }}>
             <Typography variant="body2">
-              Upload the file bytes to the <code>SignedURL</code> via HTTP <strong>PUT</strong>. Include appropriate headers such as <code>Content-Type</code> and <code>Content-Length</code>. Do not send API authorization headers to the SignedURL host.
+              Upload the file data to the <code>SignedURL</code> via HTTP <strong>PUT</strong>. You do not need to send API authorization headers to the SignedURL host.
             </Typography>
           </Box>
           <Box component="li">
             <Typography variant="body2">
-              Finalize the upload by calling <strong>PATCH /documents/:documentId</strong> with body <code>{'{"ConfirmUpload": true}'}</code>. This confirmation is required; without it, the document remains pending.
+              Finalize the upload by calling <strong>PATCH /documents/:documentId</strong> with body <code>{'{"ConfirmUpload": true}'}</code>. This confirmation is required; without it, the document will not be visible to Amherst.
             </Typography>
           </Box>
         </Box>
